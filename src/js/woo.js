@@ -1,4 +1,6 @@
-let width = 700;
+
+var width = document.getElementById('entry').clientWidth;
+
 let height = 500;
 let centered;
 let projection;
@@ -7,40 +9,39 @@ let svg;
 let map;
 let brewer;
 let color;
-let accident;
+// let accident;
 let legend;
 let x;
 
-function init() {
+wooinit()
 
+function wooinit() {
   projection = d3.geoAlbers()
-             .scale(700)
-             .translate([width / 2, height / 2]);
+  .scale(width)
+  .translate([width / 2, height / 2]);
 
   path = d3.geoPath().projection(projection);
 
-  svg = d3.select("body")
-          .append("svg")
-          .attr("width", width)
-          .attr("height", height)
+  svg = d3.select("#entry")
+  .append("svg")
+  .attr("width", width)
+  .attr("height", height)
 
   svg.append("rect")
-     .attr("class", "background")
-     .attr("width", width)
-     .attr("height", height)
-     .on("click", mapClick);  
+  .attr("class", "background")
+  .attr("width", width)
+  .attr("height", height)
+  .on("click", mapClick);
 
   map = svg.append("g");
-        
-  accident = new Map();
+
 
   buildScale();
 
   buildLegend();
-
-  loadData();
-
+  buildMap(usjson, states);
 }
+
 
 function buildScale() {
 
@@ -94,22 +95,7 @@ function buildLegend() {
 
 }
 
-function loadData() {
-
-  d3.queue()
-    .defer(d3.json, 'data/us.json')
-    .defer(d3.csv, 'data/state.csv', d => {
-      accident.set(+d.state, +d.accident);
-    })
-    .await(buildMap);
-
-}
-
-function buildMap(error, us, states) {
-
-  if (error) {
-    throw error;
-  }
+function buildMap(us, states) {
 
   statePath = topojson.feature(us, us.objects.states).features;
 
