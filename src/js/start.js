@@ -1,5 +1,6 @@
 let usjson, states;
 let accident = new Map();
+let accidents;
 
 function init() {
   loadData();
@@ -8,21 +9,23 @@ function init() {
 function loadData() {
   d3.queue()
     .defer(d3.json, './src/data/us.json')
+    .defer(d3.csv, './src/data/accident_count_with_pop.csv')
     .defer(d3.csv, './src/data/state.csv', d => {
       accident.set(+d.state, +d.accident);
     })
     .await(start);
 }
 
-function start(error, us, states) {
+function start(error, us, accidents_raw) {
   if (error) {
     throw error;
   }
   //Assign to global variable
   usjson = us;
-  states = states;
+  // states = states;
+  accidents = accidents_raw;
   //Load scripts for each section
-  loadScript("./src/js/woo.js");
+  loadScript("./src/js/entry.js");
 }
 
 

@@ -1,4 +1,4 @@
-
+//#########The file to be removed later
 var width = document.getElementById('entry').clientWidth;
 
 let height = 500;
@@ -95,6 +95,7 @@ function buildLegend() {
 
 }
 
+
 function buildMap(us, states) {
 
   statePath = topojson.feature(us, us.objects.states).features;
@@ -109,9 +110,10 @@ function buildMap(us, states) {
      .data(statePath)
      .enter()
      .append("path")
+     .attr("class", "state")
      .attr("fill", d => { return color(accident.get(d.id))})
      .attr("d", path)
-     .on("click", mapClick);
+     .on("click", wooOnClick);
 
   map.append("path")
      .datum(topojson.mesh(us, us.objects.states, (a, b) => {
@@ -122,6 +124,22 @@ function buildMap(us, states) {
 
 }
 
+function wooOnClick(d) {
+  console.log(d);
+  projection
+  .translate([width / 4, height / 4])
+  .scale(width/2);
+
+
+  map
+  .style('width', 0.5 * width + 'px')
+  .style('height', 0.5 * height + 'px');
+  map.selectAll('.state').attr('d', path);
+  
+// // resize the map
+// map.select('.land').attr('d', path);
+// map.selectAll('.state').attr('d', path);
+}
 function mapClick(d) {
 
   let x;
