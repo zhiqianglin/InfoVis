@@ -31,7 +31,8 @@ function wooinit() {
   .attr("class", "background")
   .attr("width", width)
   .attr("height", height)
-  .on("click", mapClick);
+  .on("click", mapClick)
+  // .on("click", wooOnClick);
 
   map = svg.append("g");
 
@@ -113,7 +114,9 @@ function buildMap(us, states) {
      .attr("class", "state")
      .attr("fill", d => { return color(accident.get(d.id))})
      .attr("d", path)
-     .on("click", wooOnClick);
+    //  .on("click", wooOnClick);
+     .on("click", mapClick)
+
 
   map.append("path")
      .datum(topojson.mesh(us, us.objects.states, (a, b) => {
@@ -141,7 +144,7 @@ function wooOnClick(d) {
 // map.selectAll('.state').attr('d', path);
 }
 function mapClick(d) {
-
+  console.log("aa")
   let x;
   let y;
   let k;

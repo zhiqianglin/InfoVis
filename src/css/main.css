@@ -3,11 +3,8 @@
 	pointer-events: all;
 }
 
-#states {
-	fill: #aaa;
-}
 
-#states .active {
+.states.active {
 	fill: orange;
 }
 
