@@ -17,6 +17,9 @@
 	pointer-events: none;
 }
 
+.entry_bar {
+	fill: orange;
+}
 .frame {
 	width: 960px;
 	height: 500px; 

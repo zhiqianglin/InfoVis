@@ -9,6 +9,10 @@ let entry_map;
 let keyed_accidents;
 let entry_highlighted_states = new Set();
 let entry_bars;
+let entry_feature = "ratio_per_10k";
+// let entry_feature = "accident_count"  //Alternative feature
+let top_bars;  //To be cleaned
+let entry_bar_data; //To be cleaned
 
 entry_init();
 
@@ -18,7 +22,6 @@ function entry_init() {
 
   keyed_accidents = _.keyBy(accidents, function(d) {return d.state_number})
 
-  // console.log(keyed_accidents)
   let statePath = topojson.feature(usjson, usjson.objects.states).features;
   
   statePath = statePath.filter(d => {
@@ -26,7 +29,8 @@ function entry_init() {
     });
 
   //Build Scale
-  let entry_colorDomain = d3.extent(accidents, function(d) {return +d.ratio_per_10k});
+  let entry_colorDomain = d3.extent(accidents, function(d) {
+    return +d[entry_feature]});
   let entry_colorScale = d3.scaleLinear()
                            .domain(entry_colorDomain)
                            .range(["#fff7fb", "#0570b0"]);
@@ -69,13 +73,30 @@ function entry_init() {
             .append("path")
             .attr("class", "states")
             .attr("fill", d => {
-              return entry_colorScale(keyed_accidents[d.id].ratio_per_10k)
+              return entry_colorScale(keyed_accidents[d.id][entry_feature])
             })
             .attr("d", entry_path)
             .on("click", entry_OnClick)
             .on("mouseover", entry_tip.show)
             .on("mouseout", entry_tip.hide)
             ;
+  //Draw state_names
+  entry_map.selectAll(".state_name")
+           .data(statePath)
+           .enter()
+           .append('svg:text')
+           .attr('class', 'state_name')
+           .text(function(d) {
+             return keyed_accidents[d.id].state_code;
+           })
+           .attr('x', function(d) {
+             return entry_path.centroid(d)[0];
+           })
+           .attr('y', function(d) {
+            return entry_path.centroid(d)[1];
+           })
+           .attr("text-anchor","middle")
+           .attr('font-size','10pt');
 
   //Draw state borders   
   entry_map.append("path")
@@ -84,92 +105,144 @@ function entry_init() {
             }))
             .attr("id", "state-borders")
             .attr("d", entry_path);
+  let bar_wrapper=          entry_svg.append('g')
+            .attr("transform", "translate(" + (0.7 * entry_width) + "," + (0.5 * entry_height) + ")");
+  entry_bars = bar_wrapper.append('g')
 }
 
 function entry_OnClick(selected) {
-  // console.log(selected.id);
 
   let already_selected = entry_highlighted_states.has(selected.id);
 
+  //Corner case: No state selected
   if (entry_highlighted_states.size == 0) {
     entry_shrink_map();
   }
 
+  //Corner case: Exit selection
   if (entry_highlighted_states.size == 1 && already_selected) {
     entry_expand_map();
   }
 
+  //Update the tracking of higlighted states
   if (already_selected) {
     entry_highlighted_states.delete(selected.id);
   } else {
     entry_highlighted_states.add(selected.id)
   }
 
+  //Limit to select 5 states only
   if (entry_highlighted_states.size > 5) {
     alert('Maximum 5 please');
     entry_highlighted_states.delete(selected.id);
     return;
   }
+
+  //Update status of selected state, if newly selected => acitive, else => inactive(unselect/unhighlight)
   entry_map.selectAll(".states")
            .filter(function(d) {
              return d.id == selected.id;
            }).classed('active', !already_selected)
 
-  // console.log(selected);
   entry_draw_bars();
-  console.log(entry_highlighted_states);
 }
 
 function entry_expand_map() {
+  //Update scale
   entry_projection.translate([entry_width / 2, entry_height / 2])
   .scale(entry_width);
 
   entry_map.selectAll('.states').transition(3000).attr('d', entry_path);
   entry_map.selectAll('#state-borders').transition(3000).attr('d', entry_path).style('stroke-width', 1);
+
+  //Update state_code text!!!
+  entry_map.selectAll(".state_name")
+            .transition(3000)
+            .attr('x', function(d) {
+              return entry_path.centroid(d)[0];
+            })
+            .attr('y', function(d) {
+            return entry_path.centroid(d)[1];
+            })
+            .attr("text-anchor","middle")
+            .attr('font-size','10pt');
 }
 
 function entry_shrink_map() {
+  //Update scale
   entry_projection.translate([entry_width * 0.35, entry_height / 2])
                   .scale(entry_width * 0.8);
   
   entry_map.selectAll('.states').transition(3000).attr('d', entry_path);
   entry_map.selectAll('#state-borders').transition(3000).attr('d', entry_path).style('stroke-width', 0.8);
+
+  entry_map.selectAll(".state_name")
+            .transition(3000)
+            .attr('x', function(d) {
+              return entry_path.centroid(d)[0];
+            })
+            .attr('y', function(d) {
+            return entry_path.centroid(d)[1];
+            })
+            .attr("text-anchor","middle")
+            .attr('font-size','6pt');
+
 }
 
 function entry_draw_bars() {
-  console.log("draw bars");
+  console.log("draw bars"); //This method need to be cleaned!!!
 
-  //   entry_bars = entry_svg.append('g')
-  //   .attr("transform", "translate(" + (0.7 * entry_width) + "," + (0.2 * entry_height) + ")");
+  //Generate new data from selected states
+  entry_bar_data = Array.from(entry_highlighted_states, function(d) {
+    return keyed_accidents[d];
+  });
+
+  //Move the position of bars if necessary, need to be updated
+  entry_bars.attr("transform", "translate(0" + "," + (-20 * entry_bar_data.length) + ")");
+
+  //Update scale of the selected data
+  let bar_xscale = d3.scaleLinear()
+  .range([0,  0.20 * entry_width])
+  .domain([0, d3.max(entry_bar_data, function(d) {
+    return d[entry_feature];
+  })]);
 
 
-  // let bar_xscale = d3.scaleLinear()
-  // .range([0,  0.25 * entry_width])
-  // .domain([0, d3.max(entry_highlighted_states, function(d) {
-  //   return keyed_accidents[d].ratio_per_10k;
-  // })]);
-  // let bar_yscale = d3.scaleBand()
-  // .rangeRound([0.4 * entry_height, 0])
-  // .domain(entry_highlighted_states.map(function(d) {
-  // return keyed_accidents[d].state_code;
-  // }))
-  // .padding(0.1)
-  // // let a = d3.max(entry_highlighted_states, function(d) {
-  // // return keyed_accidents[d].ratio_per_10k;})
-  // // console.log(a)
+   //Here top_bars was initially want to differentiate the upper and lower section, does not have any meaning for now
+   //Join the new data with exisiting data
+   top_bars = entry_bars.selectAll(".bar").data(entry_bar_data, function(d) {return d.state_number})
+   
+    //Remove any existing data that have been unselected
+   top_bars.exit().remove();
 
-  // let top_bars = entry_bars.selectAll(".bar")
-  //     .data(entry_highlighted_states)
-  //     .enter()
-  //     .append('g');
-  // top_bars.append('rect')
-  // .attr('class', "bar")
-  // .attr("y", function(d) {
-  // return bar_yscale(keyed_accidents[d].state_code)
-  // })
-  // .attr('x', 0)
-  // .attr('height',"20px")
-  // .attr('width', function(d) {
-  // return bar_xscale(keyed_accidents[d].ratio_per_10k);
-  // })
+   //Append new data if necessary
+    let new_bars = top_bars.enter().append('g').attr('class', 'bar')
+
+    //Add state code before bar
+    new_bars.append('text').text(function(d) {return d.state_code}).attr('x', -30).attr("dominant-baseline", "text-before-edge")
+
+    //Add bar
+    new_bars.append('rect')
+    .attr('class', "entry_bar")
+    .attr('x', 0)
+    .attr('height',"20px")
+    .attr('width', function(d) {
+    return bar_xscale(d[entry_feature]);})
+
+    //Add amount to the end of bar
+    new_bars.append('text').attr('class', 'amount_label')
+    .text(function(d) {return d[entry_feature]}).attr('x', function(d) {return bar_xscale(d[entry_feature]) + 10;})
+    .attr("dominant-baseline", "text-before-edge")
+
+
+    //Merge the new data with exisiting data, update position
+    let all_bars = new_bars.merge(top_bars)
+    .attr("transform", function(d, i) {
+      return "translate(0," + i * 30 + ")";})
+      .attr('id', function(d, i) {return i;})
+    ;
+
+    //Apply new scale to merged data, update bar length and amount label position
+    all_bars.selectAll('.entry_bar').attr('width', function(d) {return bar_xscale(d.ratio_per_10k);})
+    all_bars.selectAll('.amount_label').attr('x', function(d) {return bar_xscale(d[entry_feature]) + 10;});
 }
