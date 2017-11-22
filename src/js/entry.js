@@ -86,6 +86,7 @@ function entry_init() {
            .enter()
            .append('svg:text')
            .attr('class', 'state_name')
+           .on("click", entry_OnClick)
            .text(function(d) {
              return keyed_accidents[d.id].state_code;
            })
