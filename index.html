@@ -13,17 +13,60 @@
     <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
     <!-- <script src="./js/woo.js"></script> -->
     <link href="./src/css/main.css" rel="stylesheet">
+    <link href="./src/css/entry.css" rel="stylesheet">
     <link rel="stylesheet" href="./lib/font-awesome-4.7.0/css/font-awesome.min.css">
 
   </head>
   <body onload="init()">
-    <div class="fa-example">
-        <i class="fa fa-map-marker fa-lg" aria-hidden="true"></i>
-        <i class="fa fa-car fa-lg" aria-hidden="true"></i>
-        <i class="fa fa-user-o fa-lg" aria-hidden="true"></i>
-    </div>
-    <section>Entry</section>
+    <section>Entry
+      <div id="entry_filter">
+        <div class="entry_filter">
+            <i class="fa fa-user-o fa-lg" aria-hidden="true"></i>
+            <select class="entry_select" id="entry_sex_dropdown" onchange='entry_filter_sex(this.value)'>
+                <option value="All">All sex</option>
+                <option value="Female">Female</option>
+                <option value="Male">Male</option>
+            </select>
+        </div>
+        <div class="entry_filter">
+          <label>Age: </label>
+          <select class="entry_select" id="entry_age_dropdown" onchange='entry_filter_age(this.value)'>
+              <option value="all">All age</option>
+              <option value="age1">16-25</option>
+              <option value="age2">26-35</option>
+              <option value="age3">36-45</option>
+              <option value="age4">46-60</option>
+              <option value="age5"> >60 </option>
+            </select>
+        </div>
+        <div class="entry_filter">
+          <input id="entry_alcohol" type="checkbox" onchange='entry_filter_alcohol(this.checked)'>
+          <label>Alcohol</label>
+        </div>
+        <div class="entry_filter">
+          <input id="entry_drug" type="checkbox" onchange='entry_filter_drug(this.checked)'>
+          <label>Drug</label>
+        </div>
+        <div class="entry_filter">
+          <i class="fa fa-car fa-lg" aria-hidden="true"></i>
+          <select class="entry_select"id="entry_make" onchange='entry_filter_make(this.value)'>
+              <option value="All">All make</option>
+              <option value="Ford">Ford</option>
+              <option value="Chevrolet">Chevrolet</option>
+              <option value="Toyota">Toyota</option>
+              <option value="Honda">Honda</option>
+              <option value="Dodge">Dodge</option>
+              <option value="Datsun/Nissan">Datsun/Nissan</option>
+              <option value="Harley-Davidson">Harley-Davidson</option>
+              <option value="GMC">GMC</option>
+              <option value="Jeep/Kaiser-Jeep/Willys Jeep">Jeep</option>
+              <option value="Freightliner">Freightliner</option>
+              <option value="Other">Other</option>
+          </select>
+        </div>
+      </div>
       <div class="frame" id="entry"></div>
+    </section>
     <section>
       <div class="frame">A section</diV>
     </section>

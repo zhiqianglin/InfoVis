@@ -21,7 +21,7 @@ function start(error, us, accidents_raw) {
     throw error;
   }
   //Assign to global variable
-  usjson = us;
+  // usjson = us;
   // states = states;
   accidents = accidents_raw;
   //Load scripts for each section
