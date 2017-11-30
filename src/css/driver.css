@@ -1,0 +1,21 @@
+#driver-filter {
+	width: 960px;
+    height: 50px;
+    display: flex;
+    flex-direction: row;
+    /* justify-content: space-around; */
+    justify-content: center;
+    align-items: center;
+	/* Replace height to dynamic later mayber */
+	/* border:2px solid red;  */
+	margin: auto;
+}
+
+
+.driver-filter {
+    margin-left: 20px;
+    margin-right: 20px;
+}
+.driver-filter {
+    margin-left: 5px;
+}

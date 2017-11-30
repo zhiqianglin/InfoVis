@@ -13,6 +13,7 @@
     <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
     <!-- <script src="./js/woo.js"></script> -->
     <link href="./src/css/main.css" rel="stylesheet">
+      <link href="./src/css/driver.css" rel="stylesheet">
     <link href="./src/css/entry.css" rel="stylesheet">
     <link href="./src/css/vehicle.css" rel="stylesheet">
     <link rel="stylesheet" href="./lib/font-awesome-4.7.0/css/font-awesome.min.css">
@@ -50,7 +51,7 @@
         </div>
         <div class="entry_filter">
           <i class="fa fa-car fa-lg" aria-hidden="true"></i>
-          <select class="entry_select"id="entry_make" onchange='entry_filter_make(this.value)'>
+          <select class="entry_select" id="entry_make" onchange='entry_filter_make(this.value)'>
               <option value="All">All make</option>
               <option value="Ford">Ford</option>
               <option value="Chevrolet">Chevrolet</option>
@@ -95,14 +96,41 @@
       <div id="vehicleChart"></div>
       </div>
     </section>
-    <section>
-      <div class="frame">another section</div>
-    </section>
-    <section>
-      <div class="frame">Third section</div>
-    </section>
-  </body>
+    <section>Driver
+        <div id="driver-filter">
+            <div class="driver-filter">
+                <label>State</label>
+                <i class="fa fa-location-arrow" aria-hidden="true"></i>
+                <select>
+                    <option value="Georgia">Example</option>
+                </select>
+            </div>
 
+            <div class="driver-filter">
+
+                <i class="fa fa-car fa-lg" aria-hidden="true"></i>
+                <select class="driver-select" id="driver-make">
+                    <option value="All">All make</option>
+                    <option value="Ford">Ford</option>
+                    <option value="Chevrolet">Chevrolet</option>
+                    <option value="Toyota">Toyota</option>
+                    <option value="Honda">Honda</option>
+                    <option value="Dodge">Dodge</option>
+                    <option value="Datsun/Nissan">Datsun/Nissan</option>
+                    <option value="Harley-Davidson">Harley-Davidson</option>
+                    <option value="GMC">GMC</option>
+                    <option value="Jeep/Kaiser-Jeep/Willys Jeep">Jeep</option>
+                    <option value="Freightliner">Freightliner</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+        </div>
+        <div class="frame" id="drier">Driver Section</div>
+    </section>
+    <!--<section>-->
+      <!--<div class="frame">Third section</div>-->
+    <!--</section>-->
+  </body>
   <script src="./src/js/start.js"></script>
   <script src="./src/js/vehicle.js"></script>
 
