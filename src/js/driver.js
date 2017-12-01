@@ -37,93 +37,103 @@ let driver_width = document.getElementById('driver').clientWidth;
 let driver_height = 80;
 let driver_age_svg;
 let driver_age_chart;
-let driver_age_stack;
-let driver_violation_stack;
-let driver_obstruction_stack;
-let driver_Alcohol_stack;
-let driver_drug_stack;
-let driver_colorDomain;
+let driver_violation_chart;
+let driver_obstruction_chart;
+let driver_Alcohol_chart;
+let driver_drug_chart;
 let driver_colorScale;
 let driver_x_scale;
 let driver_y_scale;
 let driver_margin_total = 100;
+var build_chart = {
 
-driver_init();
+    draw: function(config) {
+        me = this,
+        data = config.data,
+        margin = config.margin,
+        width = driver_width - margin.left - margin.right,
+        height = driver_height - margin.top - margin.bottom,
+        xScale = d3.scaleLinear().rangeRound([0, driver_width - driver_margin_total]);
+        yScale = d3.scaleBand().domain(data.values.map(d => { return d.type; }))
+            .rangeRound([driver_height, 0])
+            .padding(0.1)
+            .align(0.3);
+        colorScale = d3.scaleOrdinal(d3.schemeBlues[5]).domain(data.columns);
+        xAxis = d3.axisBottom().scale(xScale).tickSize(0);
+        yAxis = d3.axisLeft().scale(yScale).tickSize(0);
+
+        svg = d3.select("#driver")
+            .append("svg")
+            .attr("width", driver_width)
+            .attr("height", driver_height);
+
+        let chart = svg.append("g")
+            .attr("width", width)
+            .attr("height", height)
+            .attr("transform", "translate(" + margin.left + ", " + margin.top + ")"); 
+
+        chart.append("g")
+            .attr("class", "driver-axis-y")
+            .attr("transform", "translate(" + (-30) + ", " + (-20) + ")")
+            .call(yAxis);
+
+        let stack = d3.stack().offset(d3.stackOffsetExpand);
+
+        var serie = chart.selectAll(".serie")
+            .data(stack.keys(data.columns)(data.values))
+            .enter()
+            .append("g")
+            .attr("class", "serie")
+            .attr("fill", d => { return colorScale(d.key); })
+
+        serie.selectAll("rect")
+            .data(d => { return d; })
+            .enter()
+            .append("rect")
+            .attr("y", d => { return yScale(d.data.type); })
+            .attr("height",d => { return yScale.bandwidth(); })
+            .attr("x", d => { return xScale(d[0]) - 15; })
+            .attr("width", d => { return xScale(d[1]) - xScale(d[0]) - 15; });
+        
+        var legend = serie.append("g")
+            .attr("class", "driver-legend")
+            .attr("transform", d => { 
+                var d = d[d.length - 1];
+                return "translate(" + (((xScale(d[0]) + xScale(d[1])) / 2) - 40) + ", -15)";
+            });
+    
+        legend.append("text")
+                .text( d => { return d.key; });
+    }
+}
 
 function driver_init() {
-    let margin = {top: 50, bottom: 50, left: 100, right: 50};
+    let margin = {top: 50, bottom: 100, left: 130, right: 50};
 
-    driver_age_svg = d3.select("#driver")
-                       .append("svg")
-                       .attr("width", driver_width)
-                       .attr("height", driver_height);
-    
-    driver_age_chart = driver_age_svg.append("g")
-                       .attr("width", driver_width - margin.top - margin.bottom)
-                       .attr("height", driver_height - margin.left - margin.right)
-                       .attr("transform", "translate(" + margin.left + ", " + margin.top + ")");    
+    build_chart.draw({
+        data: driver_fake_data1,
+        margin: margin
+    });
 
-    driver_y_scale = d3.scaleBand();
-    driver_x_scale = d3.scaleLinear();
-    driver_colorScale = d3.scaleOrdinal(d3.schemeBlues[5]);
-    driver_age_stack = d3.stack().offset(d3.stackOffsetExpand);
-    driver_obstruction_stack = d3.stack().offset(d3.stackOffsetExpand);
-    driver_violation_stack = d3.stack().offset(d3.stackOffsetExpand);
-    driver_Alcohol_stack = d3.stack().offset(d3.stackOffsetExpand);
-    driver_drug_stack = d3.stack().offset(d3.stackOffsetExpand);
+    build_chart.draw({
+        data: driver_fake_data2,
+        margin: margin
+    });
 
-    build_scale(driver_fake_data1);
-    build_axis(driver_fake_data1);
-    draw_stack_chart(driver_fake_data1);
+    build_chart.draw({
+        data: driver_fake_data3,
+        margin: margin
+    });
+
+    build_chart.draw({
+        data: driver_fake_data4,
+        margin: margin
+    });
+
+    build_chart.draw({
+        data: driver_fake_data5,
+        margin: margin
+    });
 }
 
-function process_data() {
-
-}
-
-function build_scale(data) {
-    driver_y_scale.domain(data.values.map(d => { return d.type; }))
-        .rangeRound([driver_height, 0])
-        .padding(0.1)
-        .align(0.3);
-
-    driver_x_scale.rangeRound([0, driver_width - driver_margin_total]);
-
-    // driver_colorScale = d3.scaleThreshold()
-    //                       .domain()
-    //                       .range(d3.schemeBlues[9]);
-
-    driver_colorScale.domain(data.columns);
-}
-
-function build_axis(data) {
-    let x_axis = d3.axisBottom().scale(driver_x_scale).tickSize(0);
-    let y_axis = d3.axisLeft().scale(driver_y_scale).tickSize(0);
-
-    driver_age_chart.append("g")
-        .attr("class", "driver-axis-x")
-        .attr("transform", "translate(0, " + driver_height + ")")
-        .call(x_axis);
-
-    driver_age_chart.append("g")
-        .attr("class", "driver-axis-y")
-        .attr("transform", "translate(" + (-30) + ", " + (-20) + ")")
-        .call(y_axis);
-}
-
-function draw_stack_chart(data) {
-    driver_age_chart.selectAll(".serie")
-        .data(driver_age_stack.keys(data.columns)(data.values))
-        .enter()
-        .append("g")
-        .attr("class", "serie")
-        .attr("fill", d => { return driver_colorScale(d.key); })
-        .selectAll("rect")
-        .data(d => { return d; })
-        .enter()
-        .append("rect")
-        .attr("y", d => { return driver_y_scale(d.data.type); })
-        .attr("height",d => { return driver_y_scale.bandwidth();} )
-        .attr("x", d => { return driver_x_scale(d[0]) - 15; })
-        .attr("width", d => { return driver_x_scale(d[1]) - driver_x_scale(d[0]) - 15; });        
-}
+driver_init();

@@ -39,6 +39,13 @@
 	fill: black;
 }
 
+.driver-legend text {
+    dy: 0.35em;
+    fill: black;
+    font-size: 15px;
+    font-family: Optima, Futura, sans-serif;
+}
+
 .switch {
   position: relative;
   display: inline-block;
