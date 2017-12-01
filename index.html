@@ -14,6 +14,7 @@
     <!-- <script src="./js/woo.js"></script> -->
     <link href="./src/css/main.css" rel="stylesheet">
     <link href="./src/css/entry.css" rel="stylesheet">
+    <link href="./src/css/vehicle.css" rel="stylesheet">
     <link rel="stylesheet" href="./lib/font-awesome-4.7.0/css/font-awesome.min.css">
 
   </head>
@@ -68,7 +69,31 @@
       <div class="frame" id="entry"></div>
     </section>
     <section>
-      <div class="frame">A section</diV>
+      <div class="frame" id="vehicleSection">
+        <h1>Vehicles in the Fatal Accidents</h1>
+        <div id="vehicleFilter">
+          <div id="vehicleYAxis">
+            <label for="veh_YAxis">Y Axis</label>
+            <select id="veh_YAxis" onchange="veh_chartUpdate()">
+              <option value="yaxis1">TravelSpeed - SpeedLimit</option>
+              <option value="yaxis2">TravelSpeed</option>
+            </select>
+          </div>
+          <div class="vehicleEachFilter">
+            <label for="veh_StateFilter">States </label>
+            <select id="veh_StateFilter" onchange="veh_chartUpdate()">
+              <option value="All States">All States</option>
+            </select>
+          </div>
+          <div class="vehicleEachFilter">
+            <label for="veh_TypeFilter">Body Type </label>
+            <select id="veh_TypeFilter" onchange="veh_chartUpdate()">
+              <option value="All Body Types">All Body Types</option>
+            </select>
+          </div>
+        </div>
+      <div id="vehicleChart"></div>
+      </div>
     </section>
     <section>
       <div class="frame">another section</div>
@@ -79,7 +104,8 @@
   </body>
 
   <script src="./src/js/start.js"></script>
-  
+  <script src="./src/js/vehicle.js"></script>
+
 
   
 </html>
