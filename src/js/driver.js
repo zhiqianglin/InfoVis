@@ -34,7 +34,7 @@ let driver_fake_data5 = {
 }
 
 let driver_width = document.getElementById('driver').clientWidth;
-let driver_height = 80;
+let driver_height = 75;
 let driver_age_svg;
 let driver_age_chart;
 let driver_violation_chart;
