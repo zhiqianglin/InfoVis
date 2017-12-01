@@ -27,6 +27,7 @@ function start(error, us, accidents_raw) {
   accidents = accidents_raw;
   //Load scripts for each section
   loadScript("./src/js/entry.js");
+  loadScript("./src/js/driver.js");
 }
 
 

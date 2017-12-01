@@ -20,6 +20,24 @@
     margin-left: 5px;
 }
 
+.driver-axis-x path{
+  display: none;
+}
+
+.driver-axis-x text{
+  display: none;
+}
+
+.driver-axis-y path {
+  display: none;
+}
+
+.driver-axis-y text {
+	font-family: Optima, Futura, sans-serif;
+	font-weight: bold;
+	font-size: 18px;
+	fill: black;
+}
 
 .switch {
   position: relative;
@@ -73,7 +91,7 @@ input:checked + .slider:before {
 
 /* Rounded sliders */
 .slider.round {
-  border-radius: 2px;
+  border-radius: 4px;
 }
 
 .slider.round:before {

@@ -1,0 +1,129 @@
+let driver_fake_data1 = {
+    values: [
+        {"type": "Age", "16-25":2000, "25-35":3000, "35-45":2000, "45-60":1000, ">60":500, "total":8500} 
+    ],
+    columns: ["16-25", "25-35", "35-45", "45-60", ">60"]
+};
+
+let driver_fake_data2 = {
+    values: [
+        {"type": "Obstruction", "None": 500, "Rain, snow":1500, "Roadway":1500, "Glare":1000, "Vehicle":500, "total":5000}
+    ],
+    columns: ["None", "Rain, snow", "Roadway", "Glare", "Vehicle"]
+};
+
+let driver_fake_data3 = {
+    values: [
+        {"type": "Violation", "None": 1000, "None-Moving":800, "Reckless":1200, "Impirement":600, "License":500, "total":4100}
+    ],
+    columns: ["None", "None-Moving", "Reckless", "Impirement", "License"]
+};
+
+let driver_fake_data4 = {
+    values: [
+        {"type": "Alcohol", "None": 3000, "Yes":3000, "No":2000, "total":8000}
+    ],
+    columns: ["None", "Yes", "No"]
+}
+
+let driver_fake_data5 = {
+    values: [
+        {"type": "Drug", "None": 3000, "Yes":3000, "No":2000, "total":8000}
+    ],
+    columns: ["None", "Yes", "No"]
+}
+
+let driver_width = document.getElementById('driver').clientWidth;
+let driver_height = 80;
+let driver_age_svg;
+let driver_age_chart;
+let driver_age_stack;
+let driver_violation_stack;
+let driver_obstruction_stack;
+let driver_Alcohol_stack;
+let driver_drug_stack;
+let driver_colorDomain;
+let driver_colorScale;
+let driver_x_scale;
+let driver_y_scale;
+let driver_margin_total = 100;
+
+driver_init();
+
+function driver_init() {
+    let margin = {top: 50, bottom: 50, left: 100, right: 50};
+
+    driver_age_svg = d3.select("#driver")
+                       .append("svg")
+                       .attr("width", driver_width)
+                       .attr("height", driver_height);
+    
+    driver_age_chart = driver_age_svg.append("g")
+                       .attr("width", driver_width - margin.top - margin.bottom)
+                       .attr("height", driver_height - margin.left - margin.right)
+                       .attr("transform", "translate(" + margin.left + ", " + margin.top + ")");    
+
+    driver_y_scale = d3.scaleBand();
+    driver_x_scale = d3.scaleLinear();
+    driver_colorScale = d3.scaleOrdinal(d3.schemeBlues[5]);
+    driver_age_stack = d3.stack().offset(d3.stackOffsetExpand);
+    driver_obstruction_stack = d3.stack().offset(d3.stackOffsetExpand);
+    driver_violation_stack = d3.stack().offset(d3.stackOffsetExpand);
+    driver_Alcohol_stack = d3.stack().offset(d3.stackOffsetExpand);
+    driver_drug_stack = d3.stack().offset(d3.stackOffsetExpand);
+
+    build_scale(driver_fake_data1);
+    build_axis(driver_fake_data1);
+    draw_stack_chart(driver_fake_data1);
+}
+
+function process_data() {
+
+}
+
+function build_scale(data) {
+    driver_y_scale.domain(data.values.map(d => { return d.type; }))
+        .rangeRound([driver_height, 0])
+        .padding(0.1)
+        .align(0.3);
+
+    driver_x_scale.rangeRound([0, driver_width - driver_margin_total]);
+
+    // driver_colorScale = d3.scaleThreshold()
+    //                       .domain()
+    //                       .range(d3.schemeBlues[9]);
+
+    driver_colorScale.domain(data.columns);
+}
+
+function build_axis(data) {
+    let x_axis = d3.axisBottom().scale(driver_x_scale).tickSize(0);
+    let y_axis = d3.axisLeft().scale(driver_y_scale).tickSize(0);
+
+    driver_age_chart.append("g")
+        .attr("class", "driver-axis-x")
+        .attr("transform", "translate(0, " + driver_height + ")")
+        .call(x_axis);
+
+    driver_age_chart.append("g")
+        .attr("class", "driver-axis-y")
+        .attr("transform", "translate(" + (-30) + ", " + (-20) + ")")
+        .call(y_axis);
+}
+
+function draw_stack_chart(data) {
+    driver_age_chart.selectAll(".serie")
+        .data(driver_age_stack.keys(data.columns)(data.values))
+        .enter()
+        .append("g")
+        .attr("class", "serie")
+        .attr("fill", d => { return driver_colorScale(d.key); })
+        .selectAll("rect")
+        .data(d => { return d; })
+        .enter()
+        .append("rect")
+        .attr("y", d => { return driver_y_scale(d.data.type); })
+        .attr("height",d => { return driver_y_scale.bandwidth();} )
+        .attr("x", d => { return driver_x_scale(d[0]) - 15; })
+        .attr("width", d => { return driver_x_scale(d[1]) - driver_x_scale(d[0]) - 15; });        
+}
