@@ -4,6 +4,7 @@ let accidents;
 
 function init() {
   loadData();
+  initVehicle();
 }
 
 function loadData() {
