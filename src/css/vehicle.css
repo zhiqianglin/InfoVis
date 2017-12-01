@@ -1,0 +1,22 @@
+#vehicleSection {
+
+}
+
+#vehicleFilter {
+    display: flex;
+}
+
+
+    #vehicleYAxis {
+        margin-right: 60px;
+    }
+
+    .vehicleEachFilter {
+        margin-right: 40px;
+    }
+
+
+#vehicleChart {
+    /*border: 1px solid rgba(0, 0, 0, 0.3);*/
+}
+
