@@ -21,14 +21,14 @@ let driver_fake_data3 = {
 
 let driver_fake_data4 = {
     values: [
-        {"type": "Alcohol", "None": 3000, "Yes":3000, "No":2000, "total":8000}
+        {"type": "Alcohol", "None": 4000, "Yes":2000, "No":3000, "total":9000}
     ],
     columns: ["None", "Yes", "No"]
 }
 
 let driver_fake_data5 = {
     values: [
-        {"type": "Drug", "None": 3000, "Yes":3000, "No":2000, "total":8000}
+        {"type": "Drug", "None": 3000, "Yes":1000, "No":2000, "total":6000}
     ],
     columns: ["None", "Yes", "No"]
 }
@@ -58,7 +58,14 @@ var build_chart = {
             .rangeRound([driver_height, 0])
             .padding(0.1)
             .align(0.3);
-        colorScale = d3.scaleOrdinal(d3.schemeBlues[5]).domain(data.columns);
+        max = 0;
+        for (let i = 0; i < data.columns.length; i++) {
+            if (data.values[0][data.columns[i]] > max) {
+                max = data.values[0][data.columns[i]];
+            }
+        }
+        console.log(max);
+        colorScale2 = d3.scaleLinear().domain([0, max]).range(["#ffffff", "#0570b0"]);
         xAxis = d3.axisBottom().scale(xScale).tickSize(0);
         yAxis = d3.axisLeft().scale(yScale).tickSize(0);
 
@@ -84,7 +91,10 @@ var build_chart = {
             .enter()
             .append("g")
             .attr("class", "serie")
-            .attr("fill", d => { return colorScale(d.key); })
+            .attr("fill", d => {
+                let c = d[0].data[d.key];
+                return colorScale2(c);
+            })
 
         serie.selectAll("rect")
             .data(d => { return d; })
@@ -99,7 +109,7 @@ var build_chart = {
             .attr("class", "driver-legend")
             .attr("transform", d => { 
                 var d = d[d.length - 1];
-                return "translate(" + (((xScale(d[0]) + xScale(d[1])) / 2) - 40) + ", -15)";
+                return "translate(" + (((xScale(d[0]) + xScale(d[1])) / 2) - 40) + ", -3)";
             });
     
         legend.append("text")
