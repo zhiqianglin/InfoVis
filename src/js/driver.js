@@ -58,13 +58,14 @@ var build_chart = {
             .rangeRound([driver_height, 0])
             .padding(0.1)
             .align(0.3);
+
         max = 0;
         for (let i = 0; i < data.columns.length; i++) {
             if (data.values[0][data.columns[i]] > max) {
                 max = data.values[0][data.columns[i]];
             }
         }
-        console.log(max);
+        // console.log(max);
         colorScale2 = d3.scaleLinear().domain([0, max]).range(["#ffffff", "#0570b0"]);
         xAxis = d3.axisBottom().scale(xScale).tickSize(0);
         yAxis = d3.axisLeft().scale(yScale).tickSize(0);
@@ -94,7 +95,7 @@ var build_chart = {
             .attr("fill", d => {
                 let c = d[0].data[d.key];
                 return colorScale2(c);
-            })
+             })
 
         serie.selectAll("rect")
             .data(d => { return d; })
