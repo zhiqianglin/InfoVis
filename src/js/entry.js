@@ -57,6 +57,7 @@ d3.queue()
 function entry_load_data(error, us, accidents, state_names, pop15) {
   usjson = us;
   entry_accidents = accidents;
+
   state_names = _.filter(state_names, function(d) {return d.id !== 72 && d.id !== 78;})
   entry_state_names = _.keyBy(state_names, function(d) {return d.state_number});
   entry_pop15 = _.keyBy(pop15, function(d) {return d.state_number});
@@ -321,6 +322,7 @@ function entry_draw_focus_info(entry_focus) {
     .attr("id", "entry_info_first")
     .attr('class', 'google_fonts');
 
+
     info.append('text').text(secone_line)
     .attr("x", 10)
     .attr("y", 50)
@@ -329,6 +331,7 @@ function entry_draw_focus_info(entry_focus) {
     .attr("id", "entry_info_second")
     .attr('class', 'google_fonts');
 
+
     info.append('text').text(third_line)
     .attr("x", 10)
     .attr("y", 70)
@@ -336,6 +339,7 @@ function entry_draw_focus_info(entry_focus) {
     .attr("text-anchor", "left")
     .attr("id", "entry_info_third")
     .attr('class', 'google_fonts');
+
 
   }
 
@@ -625,6 +629,7 @@ function entry_add_filter_options() {
         option.value = d.state_number;
         option.text = `${d.state_name} (${d.state_code})`
         option.className = 'google_fonts'
+
         document.getElementById("global_state_filter").add(option);
 
   });
