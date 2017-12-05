@@ -5,9 +5,12 @@
 
 
 .states.active {
-	fill: orange;
+	fill:#EDE1BB;
 }
 
+.states.focused {
+	fill: #F0CF81;
+}
 #state-borders {
 	fill: none;
 	stroke: #fff;
@@ -18,12 +21,20 @@
 }
 
 .entry_bar {
-	fill: orange;
+	fill: #EDE1BB;
 }
+.entry_bar_active {
+	fill: #F0CF81;
+}
+
 .frame {
 	width: 960px;
 	height: 500px; 
 	/* Replace height to dynamic later mayber */
 	/* border:2px solid red;  */
 	margin: auto;
+}
+
+.google_fonts {
+	font-family: 'Catamaran', sans-serif;
 }

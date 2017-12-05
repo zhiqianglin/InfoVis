@@ -13,7 +13,7 @@ let entry_path;
 let entry_svg;
 let entry_map;
 let keyed_accidents;
-let entry_highlighted_states = new Set();
+let entry_highlighted_states = [];
 let entry_bars;
 let entry_feature = "ratio_per_10k";
 let entry_colorDomain;
@@ -30,6 +30,9 @@ let entry_filters = {
   drug: false,
   make: 'All'
 }
+
+let entry_focus;
+let entry_focus_rect;
 
 
 d3.queue()
@@ -52,14 +55,12 @@ d3.queue()
   .await(entry_load_data);
 
 function entry_load_data(error, us, accidents, state_names, pop15) {
-  // console.log(us)
   usjson = us;
   entry_accidents = accidents;
-  // console.log(state_names);
+  state_names = _.filter(state_names, function(d) {return d.id !== 72 && d.id !== 78;})
   entry_state_names = _.keyBy(state_names, function(d) {return d.state_number});
   entry_pop15 = _.keyBy(pop15, function(d) {return d.state_number});
-  // console.log(entry_state_names);
-  // console.log(entry_pop15);
+
   entry_init();
 }
 
@@ -68,7 +69,7 @@ function entry_load_data(error, us, accidents, state_names, pop15) {
 function entry_init() {
 
   //Data Processing
-
+  entry_add_filter_options();
   // keyed_accidents = _.keyBy(accidents, function(d) {return d.state_number})
   keyed_accidents = entry_update_data();
   // console.log(keyed_accidents);
@@ -86,8 +87,6 @@ function entry_init() {
                            .domain(entry_colorDomain)
                            .range(["#fff7fb", "#0570b0"]);
                   
-
-
   entry_projection = d3.geoAlbersUsa();
 
   entry_projection.translate([entry_width / 2, entry_height / 2])
@@ -111,11 +110,7 @@ function entry_init() {
       let state_name = data.state_name;
       let accident_count = data.accident_count;
       let ratio = data.ratio_per_10k.toFixed(3);
-      // console.log(typeof(ratio))
       let state_code = data.state_code;
-      // var info = `${state_name} (${state_code}) <br/>
-      //             Accidents: ${accident_count} <br/>
-      //             Accidents/population: ${ratio} `;
 
       var info = `<h4>${state_name} (${state_code})</h4>
                   <table>
@@ -151,8 +146,10 @@ function entry_init() {
            .data(statePath)
            .enter()
            .append('svg:text')
-           .attr('class', 'state_name')
+           .attr('class', 'state_name google_fonts')
            .on("click", entry_OnClick)
+           .on("mouseover", entry_tip.show)
+           .on("mouseout", entry_tip.hide)
            .text(function(d) {
              return keyed_accidents[d.id].state_code;
            })
@@ -163,7 +160,8 @@ function entry_init() {
             return entry_path.centroid(d)[1];
            })
            .attr("text-anchor","middle")
-           .attr('font-size','10pt');
+           .attr('font-size','10pt')
+           ;
 
   //Draw state borders   
   entry_map.append("path")
@@ -174,37 +172,47 @@ function entry_init() {
             .attr("d", entry_path);
 
   entry_bars = entry_svg.append('g')
-            .attr("transform", "translate(" + (0.75 * entry_width) + "," + (0.4 * entry_height) + ")")
+            .attr("transform", "translate(" + (0.75 * entry_width) + "," + (0.55 * entry_height) + ")")
             .attr("id", "abc");
+
+  entry_focus_rect = entry_svg.append('g')
+            .attr("transform", "translate(" + (0.73 * entry_width) + "," + 0.20 * entry_height + ")");
+
+
 }
 
 function entry_OnClick(selected) {
 
-  let already_selected = entry_highlighted_states.has(selected.id);
+  let already_selected = _.includes(entry_highlighted_states, selected.id);
 
   //Corner case: No state selected
-  if (entry_highlighted_states.size == 0) {
+  if (entry_highlighted_states.length == 0) {
     entry_shrink_map();
   }
 
   //Corner case: Exit selection
-  if (entry_highlighted_states.size == 1 && already_selected) {
+  if (entry_highlighted_states.length == 1 && already_selected) {
+    entry_map.selectAll('.focused').classed('focused', false);
     entry_expand_map();
   }
 
   //Update the tracking of higlighted states
   if (already_selected) {
-    entry_highlighted_states.delete(selected.id);
+
+    let idx = entry_highlighted_states.indexOf(selected.id);
+    entry_highlighted_states.splice(idx, 1);
   } else {
-    entry_highlighted_states.add(selected.id)
+    entry_highlighted_states.unshift(selected.id)
   }
 
-  //Limit to select 5 states only
-  if (entry_highlighted_states.size > 5) {
-    alert('Maximum 5 please');
-    entry_highlighted_states.delete(selected.id);
+  //Limit to select 3 states only
+  if (entry_highlighted_states.length > 3) {
+    alert('Please select up to 3 states only from the map for comparison.');
+    entry_highlighted_states.splice(0, 1);
     return;
   }
+  entry_focus = entry_highlighted_states[0] || 'All'; //Nothing in the highlighted_states
+
 
   //Update status of selected state, if newly selected => acitive, else => inactive(unselect/unhighlight)
   entry_map.selectAll(".states")
@@ -212,7 +220,17 @@ function entry_OnClick(selected) {
              return d.id == selected.id;
            }).classed('active', !already_selected)
 
+  if (entry_focus != 'All') {
+    entry_map.selectAll('.focused').classed('focused', false);
+
+    entry_map.selectAll(".states")
+    .filter(function(d) {
+      return d.id == entry_focus;
+    }).classed('focused', true)
+  }
   entry_draw_bars();
+  entry_draw_focus_info(entry_focus);
+  set_global_filter_from_js(entry_focus);
 }
 
 function entry_expand_map() {
@@ -267,13 +285,69 @@ function entry_draw_bars() {
   entry_draw_bottom_bars(entry_bar_data);
 }
 
+
+
+function entry_draw_focus_info(entry_focus) {
+  entry_focus_rect.selectAll(".entry_focus_wrapper").remove();
+
+  let info = entry_focus_rect.append('g').attr('class', 'entry_focus_wrapper')
+  .attr("transform", "translate(0," + (-25 * entry_highlighted_states.length) + ")");
+
+  if (entry_focus != 'All') {
+    // console.log(3)
+    info.append('g').append('rect')
+    .attr("rx", 4)
+    .attr("ry", 4)
+    .attr('x', 0)
+    .attr('height',"100px")
+    .attr('width', 0.25 * entry_width)
+    .attr('class', 'entry_focus_rect');
+
+    let data = keyed_accidents[entry_focus]
+    let state_name = data.state_name;
+    let state_code = data.state_code;
+    let accident_count = data.accident_count;
+    let ratio = data.ratio_per_10k.toFixed(3);
+
+    let first_line = `${state_name} (${state_code})`;
+    let secone_line = `Accidents: ${accident_count}`;
+    let third_line = `Accidents/population: ${ratio} `;
+
+    info.append('text').text(first_line)
+    .attr("x", 10)
+    .attr("y", 20)
+    .attr("dy", ".35em")
+    .attr("text-anchor", "left")
+    .attr("id", "entry_info_first")
+    .attr('class', 'google_fonts');
+
+    info.append('text').text(secone_line)
+    .attr("x", 10)
+    .attr("y", 50)
+    .attr("dy", ".35em")
+    .attr("text-anchor", "left")
+    .attr("id", "entry_info_second")
+    .attr('class', 'google_fonts');
+
+    info.append('text').text(third_line)
+    .attr("x", 10)
+    .attr("y", 70)
+    .attr("dy", ".35em")
+    .attr("text-anchor", "left")
+    .attr("id", "entry_info_third")
+    .attr('class', 'google_fonts');
+
+  }
+
+}
+
 function entry_draw_top_bars(data) {
   let top_bars = entry_bars.append('g').attr('class', 'bar').attr("transform", "translate(0," + (-30 * data.length) + ")");
 
   if (data.length > 0) {
     top_bars.append('g').attr('class', 'bar_title')
     .attr('transform', 'translate(0, -30)')
-    .append('text').text('Fatal Accident Counts').attr("dominant-baseline", "text-before-edge");;
+    .append('text').text('Fatal Accident Counts').attr("dominant-baseline", "text-before-edge").attr('class', 'google_fonts');    
   }
 
   let bar_xscale = d3.scaleLinear()
@@ -285,12 +359,20 @@ function entry_draw_top_bars(data) {
   let bars = top_bars.selectAll(".top_bar").data(entry_bar_data).enter().append('g').attr('class', 'top_bar')
   .attr("transform", function(d, i) {
   return "translate(0," + i * 30 + ")";})
-  .attr('id', function(d, i) {return i;});
+  .attr('id', function(d, i) {return i;})
 
   bars.append('text').text(function(d) {return d.state_code}).attr('x', -30).attr("dominant-baseline", "text-before-edge")
+  .attr('class', 'google_fonts');
+  
 
   bars.append('rect')
-  .attr('class', "entry_bar")
+  .attr('class', function(d, i) {
+    if (i == 0) {
+      return "entry_bar_active"
+    } else {
+      return "entry_bar"
+    }
+  })
   .attr('x', 0)
   .attr('height',"20px")
   .attr('width', function(d) {
@@ -302,16 +384,20 @@ function entry_draw_top_bars(data) {
   bars.append('text').attr('class', 'amount_label')
   .text(function(d) {return d.accident_count}).attr('x', function(d) {return bar_xscale(d.accident_count) + 10;})
   .attr("dominant-baseline", "text-before-edge")
+  .attr('class', 'google_fonts');  
 }
 
 
 function entry_draw_bottom_bars(data) {
-  let bottom_bars = entry_bars.append('g').attr('class', 'bar').attr("transform", "translate(0" + "," + (30 * 2.5) + ")");
+  let bottom_bars = entry_bars.append('g').attr('class', 'bar').attr("transform", "translate(0" + "," + (30 * 1.8) + ")");
 
   if (data.length > 0) {
     bottom_bars.append('g').attr('class', 'bar_title')
     .attr('transform', 'translate(0, -30)')
-    .append('text').text('Fatal Accidents/population (per 10k)').attr("dominant-baseline", "text-before-edge");;
+    .append('text')
+    .text('Fatal Accidents/population (per 10k)')
+    .attr("dominant-baseline", "text-before-edge")
+    .attr('class', 'google_fonts');
   }
 
     let bar_xscale = d3.scaleLinear()
@@ -325,10 +411,19 @@ function entry_draw_bottom_bars(data) {
     return "translate(0," + i * 30 + ")";})
     .attr('id', function(d, i) {return i;});
 
-    bars.append('text').text(function(d) {return d.state_code}).attr('x', -30).attr("dominant-baseline", "text-before-edge")
+    bars.append('text')
+        .text(function(d) {return d.state_code})
+        .attr('x', -30).attr("dominant-baseline", "text-before-edge")
+        .attr('class', 'google_fonts');        
 
     bars.append('rect')
-    .attr('class', "entry_bar")
+    .attr('class', function(d, i) {
+      if (i == 0) {
+        return "entry_bar_active"
+      } else {
+        return "entry_bar"
+      }
+    })
     .attr('x', 0)
     .attr('height',"20px")
     .attr('width', function(d) {
@@ -337,9 +432,11 @@ function entry_draw_bottom_bars(data) {
     .on("mouseout", entry_tip.hide);
 
     //Add amount to the end of bar
-    bars.append('text').attr('class', 'amount_label')
+    bars.append('text')
+    .attr('class', 'amount_label')
     .text(function(d) {return d.ratio_per_10k.toFixed(3)}).attr('x', function(d) {return bar_xscale(d.ratio_per_10k) + 10;})
-    .attr("dominant-baseline", "text-before-edge");
+    .attr("dominant-baseline", "text-before-edge")
+    .attr('class', 'google_fonts');
 }
 
 //Filters
@@ -515,3 +612,93 @@ function _entry_format_number(value) {
   return Number(Math.round(value+'e2')+'e-2');
 }
 
+
+function entry_add_filter_options() {
+
+  var all_option = document.createElement("option");
+  all_option.value = 'All';
+  all_option.text = 'All states'
+  document.getElementById("global_state_filter").add(all_option);
+
+  _.each(entry_state_names, function(d) {
+    var option = document.createElement("option");
+        option.value = d.state_number;
+        option.text = `${d.state_name} (${d.state_code})`
+        option.className = 'google_fonts'
+        document.getElementById("global_state_filter").add(option);
+
+  });
+}
+
+function entry_reset_to_all() {
+  entry_map.selectAll('.states').classed('focused', false).classed('active', false);
+  entry_highlighted_states = [];
+  entry_focus = 'All';
+
+  entry_expand_map();
+  entry_draw_bars();
+  entry_draw_focus_info(entry_focus);
+}
+
+function entry_reset_to_one(new_focus) {
+  entry_map.selectAll('.states').classed('focused', false).classed('active', false);
+
+  entry_highlighted_states = [];
+  entry_OnClick({'id': new_focus});
+
+}
+function update_global_fiter_for_entry(new_focus_id) {
+  //If reset to all
+  if (new_focus_id == 'All') {
+    entry_reset_to_all();
+    //if all, then reset
+    return;
+  }
+
+  if (new_focus_id == entry_focus) {
+    return;
+  }
+
+  let already_selected = _.includes(entry_highlighted_states, +new_focus_id);
+
+  if (already_selected) {
+    //Update the focus
+    _entry_udpate_focus(new_focus_id);
+    return;
+  }
+
+  //If not already selected and still less than 3
+  if (entry_highlighted_states.length < 3) {
+    entry_OnClick({"id": +new_focus_id});
+    return;
+  }
+  else { //Already selected 3 states, reset to highlight/focus only one
+    entry_reset_to_one(+new_focus_id);
+  }
+}
+
+function _entry_udpate_focus(new_focus_id) {
+
+  //First reverse the highlighted and focused color
+  entry_map.selectAll('.focused').classed('focused', false);
+
+  entry_map.selectAll(".states")
+  .filter(function(d) {
+    return d.id == new_focus_id;
+  }).classed('focused', true);
+
+  //Set the new focused
+  entry_focus = new_focus_id;
+
+  //Basically move the focus from middle to the beginning
+  let idx = entry_highlighted_states.indexOf(new_focus_id);
+  entry_highlighted_states.splice(idx, 1);
+  entry_highlighted_states.unshift(new_focus_id);
+
+  //redraw the bars and focus info
+  entry_draw_bars();
+  entry_draw_focus_info(new_focus_id);
+
+
+  //Maybe want to resort the options for select?
+}
