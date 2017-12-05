@@ -3,6 +3,9 @@
 	pointer-events: all;
 }
 
+body {
+	padding-top: 70px
+}
 
 .states.active {
 	fill:#EDE1BB;

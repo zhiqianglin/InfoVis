@@ -17,7 +17,9 @@
     <link href="./src/css/entry.css" rel="stylesheet">
     <link href="./src/css/vehicle.css" rel="stylesheet">
     <link rel="stylesheet" href="./lib/font-awesome-4.7.0/css/font-awesome.min.css">
-    <link href="https://fonts.googleapis.com/css?family=Catamaran:400,700,900" rel="stylesheet"> 
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Catamaran:400,700,900" rel="stylesheet">
 
   </head>
   <body onload="init()">
@@ -112,7 +114,7 @@
         <div class="driver-filter">
             <label>State</label>
             <i class="fa fa-location-arrow" aria-hidden="true"></i>
-            <select>
+            <select class="driver-select">
                 <option value="Georgia">All state</option>
             </select>
       </div>
@@ -143,14 +145,12 @@
         </div>
       <div class="frame" id="driver"></div>
     </section>
-
-    <!-- <section>
-      <div class="frame">Third section</div>
-    </section> -->
   </body>
   <script src="./src/js/start.js"></script>
   <script src="./src/js/vehicle.js"></script>
-
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
 
   
 </html>

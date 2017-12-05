@@ -109,10 +109,10 @@ function veh_loadMakes() {
 */
 function veh_filterData() {
   veh_filteredData = _.filter(veh_allData, function(d) {return d.travel_speed<500 && d.travel_speed != 0 && d.speed_limit<90;});
-  console.log(veh_filteredData.length);
+//  console.log(veh_filteredData.length);
   // veh_loadMakes();
   veh_filteredData = _.filter(veh_filteredData, function(d) {return veh_typeList.indexOf(d.type) != -1;});
-  console.log(veh_filteredData.length);
+//  console.log(veh_filteredData.length);
 }
 
 function veh_getPlotData() {
@@ -136,7 +136,7 @@ function veh_getPlotData() {
                   })
                   .value();
   })
-  console.log(temp);
+//  console.log(temp);
   for(i = 0; i < temp.length; i++) {
     for(j = 0; j < temp[i].content.length; j++) {
       veh_plotData.push({
@@ -147,8 +147,8 @@ function veh_getPlotData() {
     }
   }
   veh_typeListPlot = _.map(_.uniqBy(veh_plotData, 'type'), function(d) {return d.type;});
-  console.log(veh_plotData);
-  console.log(veh_typeListPlot);
+//  console.log(veh_plotData);
+//  console.log(veh_typeListPlot);
 }
 
 function veh_plotChart() {
@@ -157,8 +157,8 @@ function veh_plotChart() {
   var maxY = d3.max(veh_plotData, function(d) {return d.speed_diff_limit;});
   var minZ = d3.min(veh_plotData, function(d) {return d.count;});
   var maxZ = d3.max(veh_plotData, function(d) {return d.count;});
-  console.log("Minimum Y: " + minY + "\t Maximum Y: " + maxY);
-  console.log("Minimum Z: " + minZ + "\t Maximum Z: " + maxZ);
+//  console.log("Minimum Y: " + minY + "\t Maximum Y: " + maxY);
+//  console.log("Minimum Z: " + minZ + "\t Maximum Z: " + maxZ);
 
   // veh_plotData = _.filter(veh_plotData, function(d) {return d.speed_diff_limit >= 50});
 
@@ -243,9 +243,9 @@ function veh_plotChart() {
 
 //Called when dropdown changed
 function veh_chartUpdate(){
-  console.log("selected Y Axis is ", veh_getSelectedYAxis());
-  console.log("selected State is ", veh_getSelectedState());
-  console.log("selected Type is ", veh_getSelectedType());
+//  console.log("selected Y Axis is ", veh_getSelectedYAxis());
+//  console.log("selected State is ", veh_getSelectedState());
+//  console.log("selected Type is ", veh_getSelectedType());
 }
 
 // Returns the selected option in the X-axis dropdown. Use d[getXSelectedOption()] to retrieve value instead of d.getXSelectedOption()
