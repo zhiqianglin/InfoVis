@@ -1,45 +1,8 @@
-let driver_fake_data1 = {
-    values: [
-        {"type": "Age", "16-25":2000, "25-35":3000, "35-45":2000, "45-60":1000, ">60":500, "total":8500}
-    ],
-    columns: ["16-25", "25-35", "35-45", "45-60", ">60"]
-};
-
-let driver_fake_data2 = {
-    values: [
-        {"type": "Obstruction", "None": 500, "Rain, snow":1500, "Roadway":1500, "Glare":1000, "Vehicle":500, "total":5000}
-    ],
-    columns: ["None", "Rain, snow", "Roadway", "Glare", "Vehicle"]
-};
-
-let driver_fake_data3 = {
-    values: [
-        {"type": "Violation", "None": 1000, "None-Moving":800, "Reckless":1200, "Impirement":600, "License":500, "total":4100}
-    ],
-    columns: ["None", "None-Moving", "Reckless", "Impirement", "License"]
-};
-
-let driver_fake_data4 = {
-    values: [
-        {"type": "Alcohol", "None": 4000, "Yes":2000, "No":3000, "total":9000}
-    ],
-    columns: ["None", "Yes", "No"]
-}
-
-let driver_fake_data5 = {
-    values: [
-        {"type": "Drug", "None": 3000, "Yes":1000, "No":2000, "total":6000}
-    ],
-    columns: ["None", "Yes", "No"]
-}
-
-
 let driver_filter = {
     sex: "All",
     vehicle_make: "All",
     state: "All"
 };
-
 let driver_width = document.getElementById('driver').clientWidth;
 let driver_height = 75;
 let driver_age_svg;
@@ -129,31 +92,31 @@ var build_chart = {
     }
 }
 
-function driver_init() {
+function driver_init(age, obstruction, violation, alcohol, drug) {
     let margin = {top: 50, bottom: 100, left: 130, right: 50};
 
     build_chart.draw({
-        data: driver_fake_data1,
+        data: age,
         margin: margin
     });
 
     build_chart.draw({
-        data: driver_fake_data2,
+        data: obstruction,
         margin: margin
     });
 
     build_chart.draw({
-        data: driver_fake_data3,
+        data: violation,
         margin: margin
     });
 
     build_chart.draw({
-        data: driver_fake_data4,
+        data: alcohol,
         margin: margin
     });
 
     build_chart.draw({
-        data: driver_fake_data5,
+        data: drug,
         margin: margin
     });
 }
@@ -196,19 +159,10 @@ function driver_load_data(error, driver, obstruction, violation) {
     if (error) {
         throw error;
     }
-
     driver_person_data = driver;
     driver_vision_data = obstruction;
     driver_violation_data = violation;
-
-    let age_data = driver_groupby_age(driver_person_data);
-    let alcohol_data = driver_groupby_alcohol(driver_person_data);
-    let drug_data = driver_groupby_drug(driver_person_data);
-    let violation_data = driver_filter_violation(driver_violation_data);
-    let obstruction_data = driver_filter_obstruction(driver_vision_data);
-
-
-    driver_init();
+    driver_update_filter("All");
 }
 
 function driver_update_filter(state) {
@@ -219,21 +173,21 @@ function driver_update_filter(state) {
     let drug_data = driver_groupby_drug(driver_person_data);
     let violation_data = driver_filter_violation(driver_violation_data);
     let obstruction_data = driver_filter_obstruction(driver_vision_data);
-
+    driver_init(age_data, obstruction_data, violation_data, alcohol_data, drug_data);
 }
 
 function driver_groupby_age(driver) {
     let filtered = driver_filter_data(driver);
-    let age_group = {
-        '< 16': _.countBy(filtered, d => { return d.age < 16; }).true,
+    let age_group_data = {
         '16 - 25': _.countBy(filtered, d => { return d.age >= 16 && d.age <= 25; }).true,
         '25 - 35': _.countBy(filtered, d => { return d.age >= 26 && d.age <= 35; }).true,
         '35 - 45': _.countBy(filtered, d => { return d.age >= 36 && d.age <= 45; }).true,
         '45 - 60': _.countBy(filtered, d => { return d.age >= 46 && d.age <= 60; }).true,
         '> 60': _.countBy(filtered, d => { return d.age > 60; }).true
     }
-    console.log(age_group);
-    return age_group;
+    age_group_data = build_data(age_group_data, "age");
+    console.log(age_group_data);
+    return age_group_data;
 }
 
 function driver_groupby_drug(driver) {
@@ -241,12 +195,8 @@ function driver_groupby_drug(driver) {
     let drug_data = _.groupBy(filtered, d => {
         return d.drug;
     });
-
-    for (var key in drug_data) {
-        if (drug_data.hasOwnProperty(key)) {
-            drug_data[key] = drug_data[key].length;
-        }
-    }
+    drug_data = change_to_count(drug_data);
+    drug_data = build_data(drug_data, "drug");
     console.log(drug_data);
     return drug_data;
 }
@@ -255,6 +205,7 @@ function driver_groupby_alcohol(driver) {
     let filtered = driver_filter_data(driver);
     let alcohol_data = _.groupBy(filtered, d => { return d.alcohol; });
     alcohol_data = change_to_count(alcohol_data);
+    alcohol_data = build_data(alcohol_data, "alcohol");
     console.log(alcohol_data);
     return alcohol_data;
 }
@@ -263,6 +214,7 @@ function driver_filter_obstruction(obstruction) {
     let filtered = driver_filter_data(obstruction);
     let obstruction_data = _.groupBy(filtered, d => { return d.obscured_by; });
     obstruction_data = change_to_count(obstruction_data);
+    obstruction_data = build_data(obstruction_data, "obstruction");
     console.log(obstruction_data);
     return obstruction_data;
 }
@@ -271,6 +223,7 @@ function driver_filter_violation(violation) {
     let filtered = driver_filter_data(violation);
     let violation_data = _.groupBy(filtered, d => { return d.violation_name; });
     violation_data = change_to_count(violation_data);
+    violation_data = build_data(violation_data, "violation");
     console.log(violation_data);
     return violation_data;
 }
@@ -310,8 +263,92 @@ function change_to_count(data) {
     return data;
 }
 
-function build_data(age) {
+function build_data(data, type) {
+    let ans;
+    if (type === "violation") {
+        ans = build_data_object(data);
+    } else if (type === "obstruction") {
+        ans = build_data_object(data);
+    } else if (type === "alcohol" || type === "drug") {
+        ans = fucking_hard_code1(data);
+    } else {
+        ans = data;
+    }
 
+    let sum = 0;
+    data_col = [];
+    for (var key in ans) {
+        if (ans.hasOwnProperty(key)) {
+            sum += ans[key];
+            data_col.push(key);
+        }
+    }
+    switch(type) {
+        case "age":
+            ans.type = "Age";
+            break;
+        case "violation":
+            ans.type = "Violation";
+            break;
+        case "obstruction":
+            ans.type = "Obstruction";
+            break;
+        case "drug":
+            ans.type = "Drug";
+            break;
+        case "alcohol":
+            ans.type = "Alcohol";
+            break;
+        default:
+            break;
+    }
+    ans.total = sum;
+    result = {
+        values:[ans],
+        columns: data_col
+    }
+//    console.log(result);
+    return result;
 }
 
+function build_data_object(data) {
+    res = get_top(data, 5);
+    result = {};
+    for (i in res) {
+        result[res[i][0]] = res[i][1];
+    }
+//    console.log(result);
+    return result;
+}
+
+function get_top(data, top_number) {
+    sortable = [];
+    for (var key in data) {
+        if (data.hasOwnProperty(key)) {
+            sortable.push([key, data[key]]);
+        }
+    }
+    sortable.sort(function(a, b) {
+        return b[1] - a[1];
+    });
+    return sortable.slice(1, top_number + 1);
+}
+
+function fucking_hard_code1(data) {
+    final_data = {};
+    for (var key in data) {
+        if (data.hasOwnProperty(key)) {
+            if (key.includes("Unknown")) {
+                final_data["Unknown"] = data[key];
+            } else if (key.includes("Not Reported")) {
+                final_data["No Report"] = data[key];
+            } else if (key.includes("Yes")) {
+                final_data["Yes"] = data[key];
+            } else {
+                final_data["No"] = data[key];
+            }
+        }
+    }
+    return final_data;
+}
 
