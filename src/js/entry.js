@@ -358,10 +358,12 @@ function entry_draw_bars() {
 function entry_draw_focus_info(entry_focus) {
   entry_focus_rect.selectAll(".entry_focus_wrapper").remove();
 
-  let info = entry_focus_rect.append('g').attr('class', 'entry_focus_wrapper')
-  .attr("transform", "translate(0," + (-25 * entry_highlighted_states.length) + ")");
 
-  if (entry_focus != 'All') {
+
+  if (entry_focus && entry_focus != 'All') {
+    // if (false) {
+    let info = entry_focus_rect.append('g').attr('class', 'entry_focus_wrapper')
+    .attr("transform", "translate(0," + (-25 * entry_highlighted_states.length) + ")");
     // console.log(3)
     info.append('g').append('rect')
     .attr("rx", 4)

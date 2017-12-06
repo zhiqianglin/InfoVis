@@ -92,7 +92,6 @@ body {
 .global_bar_content {
     display: flex;
     align-items: center;
-    justify-content: center;
     font-size: 1.6em;
     font-weight: 900;
     font-family: 'Catamaran', sans-serif;
@@ -109,4 +108,12 @@ body {
 
 #driverSection {
 	background: #EDEFF0;
+}
+
+.section_title {
+	text-align: center;
+}
+.section_title_content {
+	font-size: 30px;
+	margin-top: 20px;
 }

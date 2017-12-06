@@ -40,10 +40,12 @@
     </nav>
 
     <section id='geo_section'>
-      <h2>Accident / State population</h2>
+      <div class='section_title'>
+        <label class='section_title_content'>Accident / State Population </label>
+      </div>
       <div id="entry_filter">
         <div class="entry_filter">
-            <i class="fa fa-user-o fa-lg" aria-hidden="true"></i>
+            <i class="fa fa-user fa-lg" aria-hidden="true"></i>
             <select class="entry_select" id="entry_sex_dropdown" onchange='entry_filter_sex(this.value)'>
                 <option value="All">All sex</option>
                 <option value="Female">Female</option>
@@ -51,8 +53,8 @@
             </select>
         </div>
         <div class="entry_filter">
-          <label>Age: </label>
-          <select class="entry_select" id="entry_age_dropdown" onchange='entry_filter_age(this.value)'>
+          <!-- <label class="entry_filter_labels">Age: </label> -->
+          <select id="entry_age_dropdown" onchange='entry_filter_age(this.value)'>
               <option value="all">All age</option>
               <option value="age1">16-25</option>
               <option value="age2">26-35</option>
@@ -63,13 +65,13 @@
         </div>
         <div class="entry_filter">
           <input id="entry_alcohol" type="checkbox" onchange='entry_filter_alcohol(this.checked)'>
-          <label>Alcohol</label>
+          <label class="entry_filter_labels">Alcohol</label>
         </div>
         <div class="entry_filter">
           <input id="entry_drug" type="checkbox" onchange='entry_filter_drug(this.checked)'>
-          <label>Drug</label>
+          <label class="entry_filter_labels">Drug</label>
         </div>
-        <div class="entry_filter">
+        <div id="entry_filter_veh">
           <i class="fa fa-car fa-lg" aria-hidden="true"></i>
           <select class="entry_select" id="entry_make" onchange='entry_filter_make(this.value)'>
               <option value="All">All make</option>
@@ -91,7 +93,9 @@
     </section>
 
     <section id = "vehiclePart">
-      <h2>Vehicles in the Fatal Accidents</h2>
+      <div class='section_title'>
+          <label class='section_title_content'>Vehicles in the Fatal Accidents</label>
+      </div>
       <div id="vehicleSection">
       <div id="vehicleFilter">
         <div class="vehicleEachFilter">
@@ -133,7 +137,9 @@
     </section>
 
     <section id = "driverSection">
-      <h2>Drivers in the Fatal Accidents</h2>
+      <div class='section_title'>
+        <label class='section_title_content'>Drivers in the Fatal Accidents</label>
+      </div>
       <div id="driver-filter">
         <div class="driver-filter">
           <i class="fa fa-car fa-lg" aria-hidden="true"></i>

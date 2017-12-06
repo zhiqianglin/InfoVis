@@ -17,13 +17,20 @@
 }
 
 .entry_filter {
-    margin-left: 20px;
-    margin-right: 20px;
+    margin-left: 5px;
+    margin-right: 5px;
 }
 .entry_select {
     margin-left: 5px;
 }
 
+#entry_filter_veh {
+    margin-left: 80px;
+}
+
+.entry_filter_labels {
+    margin-bottom: auto;
+}
 #entry_tip h4{
     margin:0;
     font-size:15px;
