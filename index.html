@@ -99,14 +99,6 @@
       <div id="vehicleSection">
       <div id="vehicleFilter">
         <div class="vehicleEachFilter">
-          <label for="veh_YAxis">Y Axis</label>
-          <select id="veh_YAxis" onchange="veh_chartUpdate()">
-            <option value="yaxis1">TravelSpeed - SpeedLimit</option>
-            <option value="yaxis2">TravelSpeed</option>
-            <option value="yaxis3">Vehicle Model Year</option>
-          </select>
-        </div>
-        <div class="vehicleEachFilter">
           <label for="veh_SexFilter">Sex </label>
           <select id="veh_SexFilter" onchange="veh_chartUpdate()">
             <option value="sex0">All Sexes</option>
@@ -129,6 +121,16 @@
           <label for="veh_TypeFilter">Body Type </label>
           <select id="veh_TypeFilter" onchange="veh_chartUpdate()">
             <option value="0">All Body Types</option>
+          </select>
+        </div>
+      </div>
+      <div id="vehicleFilterY">
+        <div class="vehicleEachFilter">
+          <label for="veh_YAxis">Y Axis</label>
+          <select id="veh_YAxis" onchange="veh_chartUpdate()">
+            <option value="yaxis1">TravelSpeed - SpeedLimit</option>
+            <option value="yaxis2">TravelSpeed</option>
+            <option value="yaxis3">Vehicle Model Year</option>
           </select>
         </div>
       </div>
