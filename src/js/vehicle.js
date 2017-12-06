@@ -435,12 +435,12 @@ function veh_plotChart() {
       .attr("text-anchor", "end")
       .attr("transform", "translate(" + veh_width + "," + (veh_height + veh_margin.top) + ")")
       .text(xName);
-
+  /*
   veh_vis.append("text")
       .attr("text-anchor", "end")
       .attr("transform", "rotate(-90)")
       .text(yName);
-
+  */
 
 }
 

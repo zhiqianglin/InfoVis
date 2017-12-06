@@ -4,15 +4,28 @@
     display: flex;
     flex-direction: row;
     /* justify-content: space-around; */
-    justify-content: center;
+    justify-content: right;
     align-items: center;
 	/* Replace height to dynamic later mayber */
 	/*border:2px solid red;  */
 	margin: auto;
 }
 
+#vehicleFilterY {
+	width: 960px;
+    height: 20px; 
+    display: flex;
+    flex-direction: row;
+    /* justify-content: space-around; */
+    justify-content: left;
+    /* align-items: center; */
+	/* Replace height to dynamic later mayber */
+	/*border:2px solid red;  */
+	margin: auto;
+}
+
 .vehicleEachFilter {
-    margin-right: 10px;
+    margin-right: 40px;
 }
 
 
