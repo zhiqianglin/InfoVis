@@ -123,7 +123,7 @@ function entry_init() {
                       <td>Accidents: ${accident_count}</td>
                     </tr>
                     <tr>
-                      <td>Accidents/population: ${ratio}</td>
+                      <td>Accidents/population (per 10k): ${ratio}</td>
                     </tr>
                   </table> `;
       return info
@@ -181,7 +181,7 @@ function entry_init() {
             .attr("id", "abc");
 
   entry_focus_rect = entry_svg.append('g')
-            .attr("transform", "translate(" + (0.73 * entry_width) + "," + 0.28 * entry_height + ")");
+            .attr("transform", "translate(" + (0.72 * entry_width) + "," + 0.28 * entry_height + ")");
 
   //Draw legend
   entry_legend_wrapper = entry_svg.append('g')
@@ -370,7 +370,7 @@ function entry_draw_focus_info(entry_focus) {
     .attr("ry", 4)
     .attr('x', 0)
     .attr('height',"100px")
-    .attr('width', 0.25 * entry_width)
+    .attr('width', 0.26 * entry_width)
     .attr('class', 'entry_focus_rect');
 
     let data = keyed_accidents[entry_focus]
@@ -381,7 +381,7 @@ function entry_draw_focus_info(entry_focus) {
 
     let first_line = `${state_name} (${state_code})`;
     let secone_line = `Accidents: ${accident_count}`;
-    let third_line = `Accidents/population: ${ratio} `;
+    let third_line = `Accidents/population (per 10k): ${ratio} `;
 
     info.append('text').text(first_line)
     .attr("x", 10)
