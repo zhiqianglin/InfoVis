@@ -1,22 +1,18 @@
-#vehicleSection {
-
-}
-
 #vehicleFilter {
+	width: 960px;
+    height: 50px; 
     display: flex;
+    flex-direction: row;
+    /* justify-content: space-around; */
+    justify-content: center;
+    align-items: center;
+	/* Replace height to dynamic later mayber */
+	/*border:2px solid red;  */
+	margin: auto;
 }
 
-
-    #vehicleYAxis {
-        margin-right: 60px;
-    }
-
-    .vehicleEachFilter {
-        margin-right: 40px;
-    }
-
-
-#vehicleChart {
-    /*border: 1px solid rgba(0, 0, 0, 0.3);*/
+.vehicleEachFilter {
+    margin-right: 10px;
 }
+
 
