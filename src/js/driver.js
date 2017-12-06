@@ -98,27 +98,27 @@ let build_chart = {
 
         let legend = serie.append("g")
             .attr("class", "driver-legend")
-            .attr("transform", d => { 
+            .attr("transform", d => {
                 let dd = d[d.length - 1];
-                return "translate(" + (((xScale(dd[0]) + xScale(dd[1])) / 2) - 40) + ", -3)";
+                let size = 15;
+                let text_length = size * d.key.length * 0.6;
+                let dif = xScale(d[0][1]) - xScale(d[0][0]);
+                if (dif * 0.9 < text_length) {
+                    return "translate(" + (((xScale(dd[0]) + xScale(dd[1])) / 2) - (3 * 15 / 2)) + ", -3)";                                        
+                } else {
+                    return "translate(" + (((xScale(dd[0]) + xScale(dd[1])) / 2) - 10 - (text_length / 2)) + ", -3)";                    
+                }
             });
     
         legend.append("text")
                 .text( d => { 
                     // console.log(d);
-                    let dif = d[0][1] - d[0][0];
-                    if (dif < 0.05) {
+                    let size = 15;
+                    let text_length = size * d.key.length * 0.6;
+                    let dif = xScale(d[0][1]) - xScale(d[0][0]);
+                    // console.log(dif);
+                    if (dif * 0.9 < text_length) {
                         return "...";
-                    } else if (dif < 0.1) {
-                        if (d.key.length <= 3) {
-                            return d.key;
-                        }
-                        return d.key.slice(0, 4) + "...";
-                    } else if (dif < 0.15) {
-                        if (d.key.length <= 8) {
-                            return d.key;
-                        }
-                        return d.key.slice(0, 7) + "...";
                     } else {
                         return d.key; 
                     }
