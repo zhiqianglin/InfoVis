@@ -608,6 +608,7 @@ function entry_filter_update() {
   entry_update_legend();
   //Update bars
   entry_draw_bars();
+  entry_draw_focus_info(entry_focus)
 }
 
 function entry_update_legend() {
