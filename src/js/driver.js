@@ -91,11 +91,6 @@ let build_chart = {
                 return diff;
             });
 
-        serie.on("mouseover", tip.show)
-        .on("mouseout", tip.hide);
-
-
-
         let legend = serie.append("g")
             .attr("class", "driver-legend")
             .attr("transform", d => {
@@ -108,7 +103,9 @@ let build_chart = {
                 } else {
                     return "translate(" + (((xScale(dd[0]) + xScale(dd[1])) / 2) - 10 - (text_length / 2)) + ", -3)";                    
                 }
-            });
+            })
+            .on("mouseover", tip.show)
+            .on("mouseout", tip.hide);
     
         legend.append("text")
                 .text( d => { 
