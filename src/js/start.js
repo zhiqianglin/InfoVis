@@ -46,6 +46,7 @@ function loadScript(url)
 function global_filter_changed_from_html(new_state_id) {
   update_global_fiter_for_entry(new_state_id);
   driver_update_filter(null, new_state_id);
+  veh_chartUpdate();
 }
 
 
