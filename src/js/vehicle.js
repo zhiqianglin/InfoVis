@@ -71,7 +71,10 @@ function veh_loadTypes() {
     return {
       type: d.type,
       type_name: d.type_name,
-      type_name_show: d.type_name.substring(0, d.type_name.indexOf("(") == -1 ? d.type_name.length : d.type_name.indexOf("("))
+      type_name_show: d.type_name.substring(0, d.type_name.indexOf("(") == -1 && d.type_name.indexOf("/") == -1 ? 
+    		  d.type_name.length : d.type_name.indexOf("/") != -1 && d.type_name.indexOf("(") != -1 ? 
+    				  (d.type_name.indexOf("/") < d.type_name.indexOf("(") ? d.type_name.indexOf("/") : d.type_name.indexOf("(")) : d.type_name.indexOf("/") != -1 ?
+    						  d.type_name.indexOf("/") : d.type_name.indexOf("("))
     };
   });
   // console.log(veh_typeListAll);
