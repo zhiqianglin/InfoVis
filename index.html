@@ -17,11 +17,18 @@
     <link href="./src/css/entry.css" rel="stylesheet">
     <link href="./src/css/vehicle.css" rel="stylesheet">
     <link rel="stylesheet" href="./lib/font-awesome-4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Catamaran:400,700,900" rel="stylesheet"> 
 
   </head>
   <body onload="init()">
-    <section>
-      <h2>Fatal Vehicle Accident in the U.S. 2015</h2>
+    <section class="update this later!!!!!">
+      <div>
+        2015 Fatal Vehicle Accident in
+        <select id="global_state_filter" onchange='global_filter_changed_from_html(this.value)'></select>
+      </div>
+    </section>
+    <section id='geo_section'>
+      <h2>Accident / State population</h2>
       <div id="entry_filter">
         <div class="entry_filter">
             <i class="fa fa-user-o fa-lg" aria-hidden="true"></i>

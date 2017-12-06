@@ -1,3 +1,8 @@
+#geo_section {
+    background: #EDEFF0;
+}
+
+
 #entry_filter {
 	width: 960px;
     height: 50px; 
@@ -35,3 +40,28 @@
     opacity:0;
 }
 
+
+.entry_focus_rect {
+    background: rgb(231, 226, 226);
+    border:5px red;
+    border-radius:5px;
+    fill: white;
+    stroke: grey;
+}
+
+#entry_info_first {
+    margin:0;
+    font-size:20px;
+    font-weight: bold;
+}
+
+#entry_info_second {
+    margin:0;
+    font-size:15px;
+    
+}
+
+#entry_info_third {
+    margin:0;
+    font-size:15px;
+}

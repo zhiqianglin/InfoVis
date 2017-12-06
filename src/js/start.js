@@ -42,3 +42,16 @@ function loadScript(url)
 }
 
 
+//Use this method to update your filter used in your view
+function global_filter_changed_from_html(new_state_id) {
+  update_global_fiter_for_entry(new_state_id);
+}
+
+
+//Use this method to set the value of filter from js file
+function set_global_filter_from_js(new_state_id) {
+    var element = document.getElementById('global_state_filter');
+    element.value = new_state_id;
+    global_filter_changed_from_html(new_state_id);
+}
+
