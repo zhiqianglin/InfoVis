@@ -41,3 +41,11 @@ body {
 .google_fonts {
 	font-family: 'Catamaran', sans-serif;
 }
+
+#entry {
+	width: 960px;
+	height: 550px;
+	/* Replace height to dynamic later mayber */
+	/* border:2px solid red;  */
+	margin: auto;
+}

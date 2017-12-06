@@ -72,7 +72,13 @@ let build_chart = {
             .attr("y", d => { return yScale(d.data.type); })
             .attr("height",d => { return yScale.bandwidth(); })
             .attr("x", d => { return xScale(d[0]) - 10; })
-            .attr("width", d => { return xScale(d[1]) - xScale(d[0]) - 10; });
+            .attr("width", d => { 
+                let diff = xScale(d[1]) - xScale(d[0]) - 10;
+
+                if (diff <=0) {
+                    return 0;
+                }
+                return diff; });
             // .on("mouseover", function() { tooltip.style("display", null); })
             // .on("mouseout", function() { tooltip.style("display", "none"); })
             // .on("mousemove", mousemove);
