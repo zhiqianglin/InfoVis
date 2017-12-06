@@ -39,6 +39,7 @@ var build_chart = {
 
         svg = d3.select("#driver")
             .append("svg")
+            .attr("class", "driver-svg")
             .attr("width", driver_width)
             .attr("height", driver_height);
 
@@ -140,7 +141,7 @@ function driver_load_data(error, driver, obstruction, violation) {
 
 function driver_update_filter(make) {
 //    driver_filter.state = state;
-    d3.selectAll("svg").remove();
+    d3.selectAll(".driver-svg").remove();
     driver_filter.vehicle_make = make;
     let age_data = driver_groupby_age(driver_person_data);
     let alcohol_data = driver_groupby_alcohol(driver_person_data);
