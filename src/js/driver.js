@@ -68,9 +68,9 @@ let build_chart = {
              .attr("class", "d3-tip")
              .offset([-10, 0])
              .html(d => {
-                // console.log(d[0]["data"][d.key]);
-                let value = d[0]["data"][d.key];
-                return "<span style='color:rgb(72,242,137)'>" + d.key + ": " + value + "</span>";
+                // console.log(d);
+                let ratio = d[0]["data"][d.key] / d[0]["data"]["total"] * 100;
+                return "<span style='color:rgb(72,242,137)'>" + d.key + ": " + ratio.toFixed(1) + "%" + "</span>";
              });
  
         serie.call(tip);
@@ -90,6 +90,9 @@ let build_chart = {
                 }
                 return diff;
             });
+            
+        serie.on("mouseover", tip.show)
+                .on("mouseout", tip.hide);
 
         let legend = serie.append("g")
             .attr("class", "driver-legend")
@@ -104,22 +107,21 @@ let build_chart = {
                     return "translate(" + (((xScale(dd[0]) + xScale(dd[1])) / 2) - 10 - (text_length / 2)) + ", -3)";                    
                 }
             })
-            .on("mouseover", tip.show)
-            .on("mouseout", tip.hide);
+
     
         legend.append("text")
-                .text( d => { 
-                    // console.log(d);
-                    let size = 15;
-                    let text_length = size * d.key.length * 0.6;
-                    let dif = xScale(d[0][1]) - xScale(d[0][0]);
-                    // console.log(dif);
-                    if (dif * 0.9 < text_length) {
-                        return "...";
-                    } else {
-                        return d.key; 
-                    }
-                });
+            .text( d => { 
+                // console.log(d);
+                let size = 15;
+                let text_length = size * d.key.length * 0.6;
+                let dif = xScale(d[0][1]) - xScale(d[0][0]);
+                // console.log(dif);
+                if (dif * 0.9 < text_length) {
+                    return "...";
+                } else {
+                    return d.key; 
+                }
+            });
 
 
     }
