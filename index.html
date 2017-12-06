@@ -92,29 +92,43 @@
 
     <section id = "vehiclePart">
       <h2>Vehicles in the Fatal Accidents</h2>
-      <div class="frame" id="vehicleSection">
-        <div id="vehicleFilter">
-          <div id="vehicleYAxis">
-            <label for="veh_YAxis">Y Axis</label>
-            <select id="veh_YAxis" onchange="veh_chartUpdate()">
-              <option value="yaxis1">TravelSpeed - SpeedLimit</option>
-              <option value="yaxis2">TravelSpeed</option>
-            </select>
-          </div>
-          <div class="vehicleEachFilter">
-            <label for="veh_StateFilter">States </label>
-            <select id="veh_StateFilter" onchange="veh_chartUpdate()">
-              <option value="All States">All States</option>
-            </select>
-          </div>
-          <div class="vehicleEachFilter">
-            <label for="veh_TypeFilter">Body Type </label>
-            <select id="veh_TypeFilter" onchange="veh_chartUpdate()">
-              <option value="All Body Types">All Body Types</option>
-            </select>
-          </div>
+      <div id="vehicleSection">
+      <div id="vehicleFilter">
+        <div class="vehicleEachFilter">
+          <label for="veh_YAxis">Y Axis</label>
+          <select id="veh_YAxis" onchange="veh_chartUpdate()">
+            <option value="yaxis1">TravelSpeed - SpeedLimit</option>
+            <option value="yaxis2">TravelSpeed</option>
+            <option value="yaxis3">Vehicle Model Year</option>
+          </select>
         </div>
-      <div id="vehicleChart"></div>
+        <div class="vehicleEachFilter">
+          <label for="veh_SexFilter">Sex </label>
+          <select id="veh_SexFilter" onchange="veh_chartUpdate()">
+            <option value="sex0">All Sexes</option>
+            <option value="sex1">Male</option>
+            <option value="sex2">Female</option>
+          </select>
+        </div>
+        <div class="vehicleEachFilter">
+          <label for="veh_AgeFilter">Age </label>
+          <select id="veh_AgeFilter" onchange="veh_chartUpdate()"> 
+            <option value="age0">All Ages</option>
+            <option value="age1">16 - 25</option>
+            <option value="age2">26 - 35</option>
+            <option value="age3">36 - 45</option>
+            <option value="age4">46 - 60</option>
+            <option value="age5">> 60</option>
+          </select>
+        </div>
+        <div class="vehicleEachFilter">
+          <label for="veh_TypeFilter">Body Type </label>
+          <select id="veh_TypeFilter" onchange="veh_chartUpdate()">
+            <option value="0">All Body Types</option>
+          </select>
+        </div>
+      </div>
+      <div class="frame" id="vehicleChart"></div>
       </div>
     </section>
 
