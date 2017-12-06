@@ -23,12 +23,19 @@
 
   </head>
   <body onload="init()">
-    <section class="update this later!!!!!">
-      <div>
-        2015 Fatal Vehicle Accident in
-        <select id="global_state_filter" onchange='global_filter_changed_from_html(this.value)'></select>
+  <nav class="navbar navbar-default navbar-fixed-top">
+      <div class="container-fluid">
+          <div class="navbar-header">
+              <a class="navbar-brand">2015 Fatal Vehicle Accident in</a>
+          </div>
+          <form class="navbar-form text-center">
+              <div class="form-group">
+                  <select class="selectpicker" id="global_state_filter" onchange='global_filter_changed_from_html(this.value)'>
+                  </select>
+              </div>
+          </form>
       </div>
-    </section>
+  </nav>
     <section id='geo_section'>
       <h2>Accident / State population</h2>
       <div id="entry_filter">
@@ -111,13 +118,6 @@
     <section>
       <h2>Drivers in the Fatal Accidents</h2>
       <div id="driver-filter">
-        <div class="driver-filter">
-            <label>State</label>
-            <i class="fa fa-location-arrow" aria-hidden="true"></i>
-            <select class="driver-select">
-                <option value="Georgia">All state</option>
-            </select>
-      </div>
         <div class="driver-filter">
           <i class="fa fa-car fa-lg" aria-hidden="true"></i>
           <select class="driver-select" id="driver-make" onchange='driver_update_filter(this.value)'>

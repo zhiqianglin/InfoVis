@@ -633,6 +633,7 @@ function entry_add_filter_options() {
         document.getElementById("global_state_filter").add(option);
 
   });
+  $('.selectpicker').selectpicker('refresh');
 }
 
 function entry_reset_to_all() {

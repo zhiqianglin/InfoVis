@@ -71,8 +71,8 @@ var build_chart = {
             .append("rect")
             .attr("y", d => { return yScale(d.data.type); })
             .attr("height",d => { return yScale.bandwidth(); })
-            .attr("x", d => { return xScale(d[0]) - 15; })
-            .attr("width", d => { return xScale(d[1]) - xScale(d[0]) - 15; });
+            .attr("x", d => { return xScale(d[0]) - 10; })
+            .attr("width", d => { return xScale(d[1]) - xScale(d[0]) - 10; });
         
         var legend = serie.append("g")
             .attr("class", "driver-legend")
@@ -87,13 +87,15 @@ var build_chart = {
 }
 
 function driver_init(age, obstruction, violation, alcohol, drug) {
-    let margin = {top: 50, bottom: 100, left: 130, right: 50};
+    let margin = {top: 50, bottom: 100, left: 130, right: 100};
 
     for (let i = 0; i < arguments.length; i++) {
-        build_chart.draw({
-            data: arguments[i],
-            margin: margin
-        });
+        if (arguments[i].values[0].total != 0) {
+            build_chart.draw({
+                data: arguments[i],
+                margin: margin
+            });
+        }
     }
 }
 
@@ -139,10 +141,14 @@ function driver_load_data(error, driver, obstruction, violation) {
     driver_update_filter("All");
 }
 
-function driver_update_filter(make) {
-//    driver_filter.state = state;
+function driver_update_filter(make, state) {
     d3.selectAll(".driver-svg").remove();
-    driver_filter.vehicle_make = make;
+    if (make) {
+        driver_filter.vehicle_make = make;
+    }
+    if (state) {
+        driver_filter.state = state;
+    }
     let age_data = driver_groupby_age(driver_person_data);
     let alcohol_data = driver_groupby_alcohol(driver_person_data);
     let drug_data = driver_groupby_drug(driver_person_data);
@@ -153,12 +159,26 @@ function driver_update_filter(make) {
 
 function driver_groupby_age(driver) {
     let filtered = driver_filter_data(driver);
-    let age_group_data = {
-        '16 - 25': _.countBy(filtered, d => { return d.age >= 16 && d.age <= 25; }).true,
-        '25 - 35': _.countBy(filtered, d => { return d.age >= 26 && d.age <= 35; }).true,
-        '35 - 45': _.countBy(filtered, d => { return d.age >= 36 && d.age <= 45; }).true,
-        '45 - 60': _.countBy(filtered, d => { return d.age >= 46 && d.age <= 60; }).true,
-        '> 60': _.countBy(filtered, d => { return d.age > 60; }).true
+    let age_group_data = {};
+    let age1 = _.countBy(filtered, d => { return d.age >= 16 && d.age <= 25; }).true;
+    let age2 = _.countBy(filtered, d => { return d.age >= 26 && d.age <= 35; }).true;
+    let age3 = _.countBy(filtered, d => { return d.age >= 36 && d.age <= 45; }).true;
+    let age4 = _.countBy(filtered, d => { return d.age >= 46 && d.age <= 60; }).true;
+    let age5 = _.countBy(filtered, d => { return d.age > 60; }).true
+    if (age1 && age1 != 0) {
+        age_group_data['16-25'] = age1;
+    }
+    if (age2 && age2 != 0) {
+        age_group_data['25-35'] = age2;
+    }
+    if (age3 && age3 != 0) {
+        age_group_data['35-45'] = age3;
+    }
+    if (age4 && age4 != 0) {
+        age_group_data['45-60'] = age4;
+    }
+    if (age5 && age5 != 0) {
+        age_group_data['>60'] = age5;
     }
     age_group_data = build_data(age_group_data, "age");
     console.log(age_group_data);
@@ -319,6 +339,9 @@ function fucking_hard_code1(data) {
     final_data = {};
     for (var key in data) {
         if (data.hasOwnProperty(key)) {
+            if (!data[key] && data[key] == 0) {
+                delete data[key];
+            }
             if (key.includes("Unknown")) {
                 final_data["Unknown"] = data[key];
             } else if (key.includes("Not Reported")) {
@@ -337,6 +360,9 @@ function fucking_hard_code2(data) {
     final_data = {};
     for (var key in data) {
         if (data.hasOwnProperty(key)) {
+            if (!data[key] && data[key] == 0) {
+                delete data[key];
+            }
             if (key.includes("CARELESS/HIT-AND-RUN")) {
                 final_data["Careless/Hit and Run"] = data[key];
             } else if (key.includes("IMPAIRMENT OFFENSES")) {
@@ -357,6 +383,9 @@ function fucking_hard_code3(data) {
     final_data = {};
     for (var key in data) {
         if (data.hasOwnProperty(key)) {
+            if (!data[key] && data[key] == 0) {
+                delete data[key];
+            }
             if (key.includes("Unknown")) {
                 final_data["Unknown"] = data[key];
             } else if (key.includes("Rain, Snow")) {
