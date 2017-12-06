@@ -357,19 +357,19 @@ function veh_plotChart() {
   veh_vis.selectAll("text").remove();
 
   var legend = veh_vis.selectAll(".legend")
-      .data(myZ.ticks(9).slice(0).reverse())
+      .data(myZ.ticks((maxZ / 10) < 15 ? (maxZ / 10) : 15).slice(0).reverse())
       .enter()
       .append("g")
       .attr("class", "legend")
-      .attr("transform", function(d, i) { return "translate(" + (veh_width-veh_margin.right-10) + "," + (veh_margin.top + i * 20) + ")"; });
+      .attr("transform", function(d, i) { return "translate(" + (veh_width-veh_margin.right-10) + "," + (veh_margin.top + i * 15) + ")"; });
   legend.append("rect")
       .attr("width", 40)
-      .attr("height",20)
+      .attr("height",15)
       .style("fill", myZ);
   legend.append("text")
       .attr("x", 45)
-      .attr("y", 10)
-      .attr("dy", ".35em")
+      .attr("y", 5)
+      .attr("dy", ".5em")
       .text(String);
   veh_vis.append("text")
       .attr("x", veh_width-5)
