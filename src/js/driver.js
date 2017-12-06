@@ -5,19 +5,12 @@ let driver_filter = {
 };
 let driver_width = document.getElementById('driver').clientWidth;
 let driver_height = 75;
-let driver_age_svg;
-let driver_age_chart;
-let driver_violation_chart;
-let driver_obstruction_chart;
-let driver_Alcohol_chart;
-let driver_drug_chart;
-let driver_colorScale;
-let driver_x_scale;
-let driver_y_scale;
 let driver_margin_total = 100;
 let driver_person_data;
 let driver_vision_data;
 let driver_violation_data;
+let driver_top_make = new Set(["Ford", "Chevrolet", "Toyota", "Honda", "Dodge", "Datsun/Nissan", "Harley-Davidson", "GMC", "Jeep/Kaiser-Jeep/Willys Jeep", "Freightliner"]
+);
 
 var build_chart = {
 
@@ -95,33 +88,13 @@ var build_chart = {
 function driver_init(age, obstruction, violation, alcohol, drug) {
     let margin = {top: 50, bottom: 100, left: 130, right: 50};
 
-    build_chart.draw({
-        data: age,
-        margin: margin
-    });
-
-    build_chart.draw({
-        data: obstruction,
-        margin: margin
-    });
-
-    build_chart.draw({
-        data: violation,
-        margin: margin
-    });
-
-    build_chart.draw({
-        data: alcohol,
-        margin: margin
-    });
-
-    build_chart.draw({
-        data: drug,
-        margin: margin
-    });
+    for (let i = 0; i < arguments.length; i++) {
+        build_chart.draw({
+            data: arguments[i],
+            margin: margin
+        });
+    }
 }
-
-
 
 d3.queue()
     .defer(d3.csv, './src/data/driver.csv', d => {
@@ -165,9 +138,10 @@ function driver_load_data(error, driver, obstruction, violation) {
     driver_update_filter("All");
 }
 
-function driver_update_filter(state) {
-    driver_filter.state = state;
-
+function driver_update_filter(make) {
+//    driver_filter.state = state;
+    d3.selectAll("svg").remove();
+    driver_filter.vehicle_make = make;
     let age_data = driver_groupby_age(driver_person_data);
     let alcohol_data = driver_groupby_alcohol(driver_person_data);
     let drug_data = driver_groupby_drug(driver_person_data);
@@ -245,12 +219,18 @@ function driver_filter_state(accident) {
 }
 
 function driver_filter_make(accident) {
+    let filter_by_make;
     if (driver_filter.vehicle_make === "All") {
         return accident;
+    } else if (driver_filter.vehicle_make === "Other") {
+        filter_by_make = _.filter(accident, d => {
+            return !driver_top_make.has(d.vehicle_make);
+        });
+    } else {
+        filter_by_make = _.filter(accident, d => {
+            return d.vehicle_make == driver_filter.vehicle_make
+        });
     }
-    let filter_by_make = _.filter(accident, d => {
-        return d.vehicle_make == driver_filter.vehicle_make
-    });
     return filter_by_make;
 }
 
@@ -266,9 +246,9 @@ function change_to_count(data) {
 function build_data(data, type) {
     let ans;
     if (type === "violation") {
-        ans = build_data_object(data);
+        ans = fucking_hard_code2(build_data_object(data));
     } else if (type === "obstruction") {
-        ans = build_data_object(data);
+        ans = fucking_hard_code3(build_data_object(data));
     } else if (type === "alcohol" || type === "drug") {
         ans = fucking_hard_code1(data);
     } else {
@@ -346,6 +326,46 @@ function fucking_hard_code1(data) {
                 final_data["Yes"] = data[key];
             } else {
                 final_data["No"] = data[key];
+            }
+        }
+    }
+    return final_data;
+}
+
+function fucking_hard_code2(data) {
+    final_data = {};
+    for (var key in data) {
+        if (data.hasOwnProperty(key)) {
+            if (key.includes("CARELESS/HIT-AND-RUN")) {
+                final_data["Careless/Hit and Run"] = data[key];
+            } else if (key.includes("IMPAIRMENT OFFENSES")) {
+                final_data["Impairment"] = data[key];
+            } else if (key.includes("NON-MOVING")) {
+                final_data["Non Moving"] = data[key];
+            } else if (key.includes("RULES OF THE ROAD")) {
+                final_data["Turning"] = data[key];
+            } else {
+                final_data["License"] = data[key];
+            }
+        }
+    }
+    return final_data;
+}
+
+function fucking_hard_code3(data) {
+    final_data = {};
+    for (var key in data) {
+        if (data.hasOwnProperty(key)) {
+            if (key.includes("Unknown")) {
+                final_data["Unknown"] = data[key];
+            } else if (key.includes("Rain, Snow")) {
+                final_data["Rain/Snow/Fog"] = data[key];
+            } else if (key.includes("In-Transport Motor")) {
+                final_data["Motor"] = data[key];
+            } else if (key.includes("Reflected Glare")) {
+                final_data["Glare"] = data[key];
+            } else {
+                final_data["Others"] = data[key];
             }
         }
     }
