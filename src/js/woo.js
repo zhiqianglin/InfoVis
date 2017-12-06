@@ -13,6 +13,7 @@ let color;
 let legend;
 let x;
 
+
 wooinit()
 
 function wooinit() {

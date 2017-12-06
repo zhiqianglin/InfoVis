@@ -31,9 +31,13 @@ let entry_filters = {
   make: 'All'
 }
 
+let entry_margin = {
+  bottom: 50,
+}
 let entry_focus;
 let entry_focus_rect;
-
+let entry_legend;
+let entry_expanded = true;
 
 d3.queue()
   .defer(d3.json, './src/data/us.json')
@@ -87,7 +91,7 @@ function entry_init() {
   entry_colorScale = d3.scaleLinear()
                            .domain(entry_colorDomain)
                            .range(["#fff7fb", "#0570b0"]);
-                  
+
   entry_projection = d3.geoAlbersUsa();
 
   entry_projection.translate([entry_width / 2, entry_height / 2])
@@ -98,9 +102,9 @@ function entry_init() {
   entry_svg = d3.select("#entry")
                 .append("svg")
                 .attr("width", entry_width)
-                .attr("height", entry_height);
+                .attr("height", entry_height + entry_margin.bottom)
+                .attr("transform", "translate(0" + "," + (-20) + ")")
 
-  
   entry_map = entry_svg.append('g');
 
   //Create tooltip
@@ -173,14 +177,37 @@ function entry_init() {
             .attr("d", entry_path);
 
   entry_bars = entry_svg.append('g')
-            .attr("transform", "translate(" + (0.75 * entry_width) + "," + (0.55 * entry_height) + ")")
+            .attr("transform", "translate(" + (0.75 * entry_width) + "," + (0.68 * entry_height) + ")")
             .attr("id", "abc");
 
   entry_focus_rect = entry_svg.append('g')
-            .attr("transform", "translate(" + (0.73 * entry_width) + "," + 0.20 * entry_height + ")");
+            .attr("transform", "translate(" + (0.73 * entry_width) + "," + 0.28 * entry_height + ")");
 
+  //Draw legend
+  entry_legend_wrapper = entry_svg.append('g')
+              .attr("transform", "translate(" + (0.3 * entry_width) + "," + (entry_height + 0.1 * entry_margin.bottom) + ")");
 
+  entry_legend = entry_legend_wrapper.selectAll(".entry_legend").data(entry_colorScale.ticks()).enter()
+  .append('g').attr('class', 'entry_legend')
+  .attr("transform", function(d, i) {
+    return "translate(" + (40 * i) + "," + "0)"});
+
+  entry_legend.append("rect")
+    .attr('class', 'entry_legned_rect')
+    .attr("width", 40)
+    .attr("height", 15)
+    .style("fill", entry_colorScale);
+
+  entry_legend.append("text")
+    .attr('class', 'entry_legned_text')
+    .attr('font-size', '12px')
+    .attr("x", 20)
+    .attr("y", 25)
+    .attr("dy", ".35em")
+    .attr("text-anchor", "middle")
+    .text(function(d) {return d.toFixed(2)});
 }
+
 
 function entry_OnClick(selected) {
 
@@ -235,16 +262,18 @@ function entry_OnClick(selected) {
 }
 
 function entry_expand_map() {
+  entry_expanded = true;
   //Update scale
   entry_projection.translate([entry_width / 2, entry_height / 2])
   .scale(entry_width);
 
-  entry_map.selectAll('.states').transition(3000).attr('d', entry_path);
-  entry_map.selectAll('#state-borders').transition(3000).attr('d', entry_path).style('stroke-width', 1);
+  entry_map.selectAll('.states').transition().duration(750).attr('d', entry_path);
+  entry_map.selectAll('#state-borders').transition().duration(750).attr('d', entry_path).style('stroke-width', 1);
 
   //Update state_code text!!!
   entry_map.selectAll(".state_name")
-            .transition(3000)
+            .transition()
+            .duration(750)
             .attr('x', function(d) {
               return entry_path.centroid(d)[0];
             })
@@ -253,18 +282,36 @@ function entry_expand_map() {
             })
             .attr("text-anchor","middle")
             .attr('font-size','10pt');
+
+
+    entry_legend_wrapper.transition()
+    .duration(750)
+            .attr("transform", "translate(" + (0.3 * entry_width) + "," + (entry_height + 0.1 * entry_margin.bottom) + ")");
+      entry_legend_wrapper.selectAll(".entry_legend")
+      .transition().duration(750)
+      .attr('transform', function(d, i) {
+        return  "translate(" + (40 * i) + "," + "0)";
+      });
+      entry_legend.selectAll('.entry_legned_rect').transition().duration(750)
+      .attr('width', 40).attr('height', 12)
+
+      entry_legend.selectAll('.entry_legned_text').transition().duration(750).attr("x", 20)
+      .attr("y", 25)
+      .attr('font-size', '12px');
 }
 
 function entry_shrink_map() {
   //Update scale
+  entry_expanded = false;
   entry_projection.translate([entry_width * 0.35, entry_height * 0.45])
                   .scale(entry_width * 0.8);
   
-  entry_map.selectAll('.states').transition(3000).attr('d', entry_path);
-  entry_map.selectAll('#state-borders').transition(3000).attr('d', entry_path).style('stroke-width', 0.8);
+  entry_map.selectAll('.states').transition().duration(750).attr('d', entry_path);
+  entry_map.selectAll('#state-borders').transition().duration(750).attr('d', entry_path).style('stroke-width', 0.8);
 
   entry_map.selectAll(".state_name")
-            .transition(3000)
+            .transition()
+            .duration(750)
             .attr('x', function(d) {
               return entry_path.centroid(d)[0];
             })
@@ -273,6 +320,26 @@ function entry_shrink_map() {
             })
             .attr("text-anchor","middle")
             .attr('font-size','6pt');
+
+  //Transform legend
+  entry_legend_wrapper.transition().duration(750)
+        .attr("transform", "translate(" + (0.15 * entry_width) + "," + (0.9 * entry_height) + ")");
+
+  entry_legend_wrapper.selectAll(".entry_legend")
+  .transition()
+  .duration(750)
+  .attr('transform', function(d, i) {
+    return  "translate(" + (32 * i) + "," + "12)";
+  });
+
+  entry_legend.selectAll('.entry_legned_rect').transition().duration(750)
+  .attr('width', '32px').attr('height', '12px')
+
+  entry_legend.selectAll('.entry_legned_text').transition().duration(750).attr("x", 15)
+  .attr("y", 25)
+  .attr('font-size', '10px');
+
+
 }
 
 function entry_draw_bars() {
@@ -531,16 +598,75 @@ function entry_filter_update() {
   entry_colorScale = d3.scaleLinear()
                            .domain(entry_colorDomain)
                            .range(["#fff7fb", "#0570b0"]);
+  // console.log(entry_colorScale.ticks(10))
   //Change Map fille color
   entry_map.selectAll('.states').attr("fill", d=> {
     let new_color =  entry_colorScale(keyed_accidents[d.id][entry_feature]);
     return new_color;
   });
 
+  entry_update_legend();
   //Update bars
   entry_draw_bars();
 }
 
+function entry_update_legend() {
+  entry_legend_wrapper.selectAll('.entry_legend').remove();
+
+  if (entry_expanded) {
+
+        //Draw legend
+        entry_legend_wrapper
+        .attr("transform", "translate(" + (0.25 * entry_width) + "," + (entry_height + 0.1 * entry_margin.bottom) + ")");
+
+      entry_legend = entry_legend_wrapper.selectAll(".entry_legend").data(entry_colorScale.ticks()).enter()
+      .append('g').attr('class', 'entry_legend')
+      .attr("transform", function(d, i) {
+      return "translate(" + (40 * i) + "," + "0)"});
+
+      entry_legend.append("rect")
+      .attr('class', 'entry_legned_rect')
+      .attr("width", 40)
+      .attr("height", 15)
+      .style("fill", entry_colorScale);
+
+      entry_legend.append("text")
+      .attr('class', 'entry_legned_text')
+      .attr('font-size', '12px')
+      .attr("x", 20)
+      .attr("y", 25)
+      .attr("dy", ".35em")
+      .attr("text-anchor", "middle")
+      .text(function(d) {return d.toFixed(2)});
+
+  } else {
+        //Draw legend
+        entry_legend_wrapper
+        .attr("transform", "translate(" + (0.15 * entry_width) + "," + (0.9 * entry_height) + ")");
+
+      entry_legend = entry_legend_wrapper.selectAll(".entry_legend").data(entry_colorScale.ticks()).enter()
+      .append('g').attr('class', 'entry_legend')
+      .attr("transform", function(d, i) {
+      return "translate(" + (32 * i) + "," + "12)"});
+
+      entry_legend.append("rect")
+      .attr('class', 'entry_legned_rect')
+      .attr("width", 32)
+      .attr("height", 12)
+      .style("fill", entry_colorScale);
+
+      entry_legend.append("text")
+      .attr('class', 'entry_legned_text')
+      .attr('font-size', '10px')
+      .attr("x", 15)
+      .attr("y", 25)
+      .attr("dy", ".35em")
+      .attr("text-anchor", "middle")
+      .text(function(d) {return d.toFixed(2)});
+
+  }
+
+}
 
 // Filters
 

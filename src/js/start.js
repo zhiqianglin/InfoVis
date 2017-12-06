@@ -53,6 +53,7 @@ function global_filter_changed_from_html(new_state_id) {
 function set_global_filter_from_js(new_state_id) {
     var element = document.getElementById('global_state_filter');
     element.value = new_state_id;
+    $('.selectpicker').selectpicker('refresh');    
     global_filter_changed_from_html(new_state_id);
 }
 
