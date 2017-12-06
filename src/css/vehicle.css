@@ -24,8 +24,20 @@
 	margin: auto;
 }
 
-.vehicleEachFilter {
+.vehicleFilterLogo {
+	margin-right: 10px;
+}
+
+.vehicleSexFilter {
+    margin-right: 20px;
+}
+
+.vehicleAgeFilter {
     margin-right: 40px;
+}
+
+.vehicleTypeFilter {
+    margin-right: 10px;
 }
 
 

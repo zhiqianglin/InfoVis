@@ -94,12 +94,14 @@
 
     <section id = "vehiclePart">
       <div class='section_title'>
-          <label class='section_title_content'>Vehicles in the Fatal Accidents</label>
+        <label class='section_title_content'>Vehicles in the Fatal Accidents</label>
       </div>
       <div id="vehicleSection">
       <div id="vehicleFilter">
-        <div class="vehicleEachFilter">
-          <i class="fa fa-user fa-lg" aria-hidden="true"></i>
+      	<div class = vehicleFilterLogo>
+      	  <i class="fa fa-user fa-lg" aria-hidden="true"></i>
+      	</div>
+        <div class="vehicleSexFilter">
           <label for="veh_SexFilter"> </label>
           <select id="veh_SexFilter" onchange="veh_chartUpdate()">
             <option value="sex0">All Sexes</option>
@@ -107,7 +109,7 @@
             <option value="sex2">Female</option>
           </select>
         </div>
-        <div class="vehicleEachFilter">
+        <div class="vehicleAgeFilter">
           <label for="veh_AgeFilter"> </label>
           <select id="veh_AgeFilter" onchange="veh_chartUpdate()"> 
             <option value="age0">All Ages</option>
@@ -118,8 +120,10 @@
             <option value="age5">> 60</option>
           </select>
         </div>
-        <div class="vehicleEachFilter">
-          <i class="fa fa-car fa-lg" aria-hidden="true"></i>
+        <div class="vehicleFilterLogo">
+        	  <i class="fa fa-car fa-lg" aria-hidden="true"></i>
+        </div>
+        <div class="vehicleTypeFilter">
           <label for="veh_TypeFilter"> </label>
           <select id="veh_TypeFilter" onchange="veh_chartUpdate()">
             <option value="0">All Body Types</option>
