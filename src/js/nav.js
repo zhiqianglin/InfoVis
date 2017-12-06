@@ -21,7 +21,7 @@
 
         $('.nav__item--current').removeClass('nav__item--current');
         $("html, body").animate({
-            scrollTop: $(section).offset().top
+            scrollTop: $(section).offset().top + 60
         });
         $(this).addClass('nav__item--current');
         clickScroll = true;
@@ -50,7 +50,7 @@
 	            $('.nav__item').each(function () {
 	                var currentLink = $(this);
 	                var refElement = $(currentLink.attr("href"));
-	                var height = refElement.position().top;
+	                var height = refElement.position().top - 60;
 	                if (height <= y && height + refElement.height() > y) {
 	                    $('.nav a').removeClass("nav__item--current");
 	                    currentLink.addClass("nav__item--current");
