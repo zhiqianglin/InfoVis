@@ -11,11 +11,13 @@
     <script src="./lib/d3/d3-queue.v3.min.js"></script>
     <script src="./lib/lodash.js"></script>
     <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <!-- <script src="./js/woo.js"></script> -->
     <link href="./src/css/main.css" rel="stylesheet">
     <link href="./src/css/driver.css" rel="stylesheet">
     <link href="./src/css/entry.css" rel="stylesheet">
     <link href="./src/css/vehicle.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="./src/css/nav.css" />
     <link rel="stylesheet" href="./lib/font-awesome-4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
@@ -23,19 +25,20 @@
 
   </head>
   <body onload="init()">
-  <nav class="navbar navbar-default navbar-fixed-top">
-      <div class="container-fluid">
-          <div class="navbar-header">
-              <a class="navbar-brand">2015 Fatal Vehicle Accident in</a>
-          </div>
-          <form class="navbar-form text-center">
-              <div class="form-group">
-                  <select class="selectpicker" id="global_state_filter" onchange='global_filter_changed_from_html(this.value)'>
-                  </select>
-              </div>
-          </form>
-      </div>
-  </nav>
+    <section class="global_bar">
+      <div class="global_bar_content">
+            <span style="margin-right: 10px;">2015 Fatal Vehicle Accident in</span>
+            <select class="selectpicker" id="global_state_filter" onchange='global_filter_changed_from_html(this.value)'>
+            </select>
+        </div>
+    </section>
+
+    <nav class="nav nav--etefu">
+      <a href="#geo_section" class="nav__item" aria-label="Item 1"><span class="nav__item-inner"></span><span class="nav__item-title">Geo</span></a>
+      <a href="#vehiclePart" class="nav__item nav__item--current" aria-label="Item 2"><span class="nav__item-inner"></span><span class="nav__item-title">Vehicle</span></a>
+      <a href="#driverSection" class="nav__item" aria-label="Item 3"><span class="nav__item-inner"></span><span class="nav__item-title">Driver</span></a>
+    </nav>
+
     <section id='geo_section'>
       <h2>Accident / State population</h2>
       <div id="entry_filter">
@@ -87,7 +90,7 @@
       <div id="entry"></div>
     </section>
 
-    <section>
+    <section id = "vehiclePart">
       <h2>Vehicles in the Fatal Accidents</h2>
       <div class="frame" id="vehicleSection">
         <div id="vehicleFilter">
@@ -115,7 +118,7 @@
       </div>
     </section>
 
-    <section>
+    <section id = "driverSection">
       <h2>Drivers in the Fatal Accidents</h2>
       <div id="driver-filter">
         <div class="driver-filter">
@@ -148,6 +151,7 @@
   </body>
   <script src="./src/js/start.js"></script>
   <script src="./src/js/vehicle.js"></script>
+  <script src="./src/js/nav.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
