@@ -357,7 +357,7 @@ function veh_plotChart() {
   veh_vis.selectAll("text").remove();
 
   var legend = veh_vis.selectAll(".legend")
-      .data(myZ.ticks(9).slice(1).reverse())
+      .data(myZ.ticks(9).slice(0).reverse())
       .enter()
       .append("g")
       .attr("class", "legend")
