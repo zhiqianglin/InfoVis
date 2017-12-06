@@ -478,5 +478,5 @@ function veh_getSelectedType() {
 function veh_getSelectedState(){
   var node = d3.select('#global_state_filter').node();
   var i = node.selectedIndex;
-  return node[i].value;
+  return node[i] ? node[i].value : "All";
 }
