@@ -375,7 +375,54 @@ function veh_plotChart() {
       .attr("x", veh_width-5)
       .attr("y", 10)
       .text("Counts");
+	
+  var xName;
+  if(veh_getSelectedType() == 0) {
+    xName = "Body Type";
+  } else {
+    xName = "Vehicle Make";
+  }
+
+  var yName;
+  var mphFlag;
+  if(veh_getSelectedYAxis() == "yaxis1") {
+    yName = "TravelSpeed - SpeedLimit";
+    mphFlag = 1;
+  } else if(veh_getSelectedYAxis() == "yaxis2") {
+    yName = "TravelSpeed";
+    mphFlag = 1;
+  } else {
+    yName = "Vehicle Model Year";
+    mphFlag = 0;
+  }
+
+  veh_tip = d3.tip()
+  			    	.attr('id', 'veh_tooltip')
+    			    .html(function(d) {
+                var xTitle = xName;
+                var xValue = d.xValShow;
+                var yTitle = yName;
+                var yValue = mphFlag == 1 ? d.yVal + "mph" : d.yVal;
+                var count = d.count;
+
+                var info = `<table>
+                  			    <tr>
+                  			      <td>${xTitle}: ${xValue}</td>
+                  			    </tr>
+                  			    <tr>
+                  			      <td>${yTitle}: ${yValue}</td>
+                  			    </tr>
+                              <tr>
+                                <td>Counts: ${count}</td>
+                              </tr>
+                            </table> `;
+                return info
+    			    });
+
+  veh_vis.call(veh_tip);
+  
   if(veh_getSelectedYAxis() != "yaxis3") {
+    
     veh_vis.selectAll("rect")
             .data(veh_dataPlot)
             .enter()
@@ -386,7 +433,9 @@ function veh_plotChart() {
             .attr("y", function(d) {return veh_margin.top + (veh_height - veh_margin.top) * maxY / (maxY - minY) - d.yVal * (veh_height - veh_margin.top) / (maxY - minY);})
             .attr("width", (veh_width - 120) / 10)
             .attr("height", (veh_height - veh_margin.top) / (maxY - minY))
-            .style("fill", function(d) { return myZ(d.count); });
+            .style("fill", function(d) { return myZ(d.count); })
+            .on("mouseover", veh_tip.show)
+            .on("mouseout",  veh_tip.hide);
     if(veh_getSelectedYAxis() == "yaxis1") {
       veh_vis.append("g")
               .attr("class", "x axis")
@@ -414,7 +463,9 @@ function veh_plotChart() {
             .attr("y", function(d) {return veh_margin.top + (2016 - d.yVal) * (veh_height - veh_margin.top) / (maxY - minY);})
             .attr("width", (veh_width - 120) / 10)
             .attr("height", (veh_height - veh_margin.top) / (maxY - minY))
-            .style("fill", function(d) { return myZ(d.count); });
+            .style("fill", function(d) { return myZ(d.count); })
+            .on("mouseover", veh_tip.show)
+            .on("mouseout",  veh_tip.hide);
   }
 
 

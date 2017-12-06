@@ -40,4 +40,13 @@
     margin-right: 10px;
 }
 
-
+#veh_tooltip {
+    background: rgb(231, 226, 226);
+    border:1px solid grey;
+    border-radius:5px;
+    font-size:13px;
+    width:auto;
+    padding:4px;
+    color:rgb(39, 33, 33);
+    opacity:0;
+}
