@@ -3,7 +3,7 @@ let driver_filter = {
     vehicle_make: "All",
     state: "All"
 };
-let driver_width = document.getElementById('driver').clientWidth;
+let driver_width = document.getElementById('driver').clientWidth * 0.9;
 let driver_height = 75;
 let driver_margin_total = 100;
 let driver_person_data;
@@ -12,7 +12,7 @@ let driver_violation_data;
 let driver_top_make = new Set(["Ford", "Chevrolet", "Toyota", "Honda", "Dodge", "Datsun/Nissan", "Harley-Davidson", "GMC", "Jeep/Kaiser-Jeep/Willys Jeep", "Freightliner"]
 );
 
-var build_chart = {
+let build_chart = {
 
     draw: function(config) {
         me = this,
@@ -55,7 +55,7 @@ var build_chart = {
 
         let stack = d3.stack().offset(d3.stackOffsetExpand);
 
-        var serie = chart.selectAll(".serie")
+        let serie = chart.selectAll(".serie")
             .data(stack.keys(data.columns)(data.values))
             .enter()
             .append("g")
@@ -64,7 +64,7 @@ var build_chart = {
                 let c = d[0].data[d.key];
                 return colorScale2(c);
              })
-
+            
         serie.selectAll("rect")
             .data(d => { return d; })
             .enter()
@@ -73,21 +73,67 @@ var build_chart = {
             .attr("height",d => { return yScale.bandwidth(); })
             .attr("x", d => { return xScale(d[0]) - 10; })
             .attr("width", d => { return xScale(d[1]) - xScale(d[0]) - 10; });
+            // .on("mouseover", function() { tooltip.style("display", null); })
+            // .on("mouseout", function() { tooltip.style("display", "none"); })
+            // .on("mousemove", mousemove);
+
+        // function mousemove(d, i) {
+        //     // console.log(d3.mouse(this));
+        //     var xPosition = d3.mouse(this)[0] - 20;
+        //     var yPosition = d3.mouse(this)[1] - 20;
+        //     console.log(d);
+        //     tooltip.attr("transform", "translate(" + xPosition + "," + yPosition + ")");
+        //     tooltip.select("text").text("Wo Cao");
+        // }
+
+        // let tooltip = chart.append("g")
+        //      .attr("class", "d3-tip")
+        //      .style("display", "none");
+                 
+        //      tooltip.append("rect")
+        //      .attr("width", 60)
+        //      .attr("height", 20)
+        //      .attr("fill", "black");
+         
+        //      tooltip.append("text")
+        //      .attr("x", 30)
+        //      .attr("dy", "1.2em")
+        //      .style("text-anchor", "middle")
+        //      .attr("font-size", "12px")
+        //      .attr("font-weight", "bold");
         
-        var legend = serie.append("g")
+        let legend = serie.append("g")
             .attr("class", "driver-legend")
             .attr("transform", d => { 
-                var d = d[d.length - 1];
-                return "translate(" + (((xScale(d[0]) + xScale(d[1])) / 2) - 40) + ", -3)";
+                let dd = d[d.length - 1];
+                return "translate(" + (((xScale(dd[0]) + xScale(dd[1])) / 2) - 40) + ", -3)";
             });
     
         legend.append("text")
-                .text( d => { return d.key; });
+                .text( d => { 
+                    // console.log(d);
+                    let dif = d[0][1] - d[0][0];
+                    if (dif < 0.05) {
+                        return "...";
+                    } else if (dif < 0.1) {
+                        if (d.key.length <= 3) {
+                            return d.key;
+                        }
+                        return d.key.slice(0, 4) + "...";
+                    } else if (dif < 0.15) {
+                        if (d.key.length <= 8) {
+                            return d.key;
+                        }
+                        return d.key.slice(0, 7) + "...";
+                    } else {
+                        return d.key; 
+                    }
+                });
     }
 }
 
 function driver_init(age, obstruction, violation, alcohol, drug) {
-    let margin = {top: 50, bottom: 100, left: 130, right: 100};
+    let margin = {top: 50, bottom: 100, left: 130, right: 50};
 
     for (let i = 0; i < arguments.length; i++) {
         if (arguments[i].values[0].total != 0) {
@@ -138,7 +184,7 @@ function driver_load_data(error, driver, obstruction, violation) {
     driver_person_data = driver;
     driver_vision_data = obstruction;
     driver_violation_data = violation;
-    driver_update_filter("All");
+    driver_update_filter();
 }
 
 function driver_update_filter(make, state) {
@@ -181,7 +227,7 @@ function driver_groupby_age(driver) {
         age_group_data['>60'] = age5;
     }
     age_group_data = build_data(age_group_data, "age");
-    console.log(age_group_data);
+    // console.log(age_group_data);
     return age_group_data;
 }
 
@@ -192,7 +238,7 @@ function driver_groupby_drug(driver) {
     });
     drug_data = change_to_count(drug_data);
     drug_data = build_data(drug_data, "drug");
-    console.log(drug_data);
+    // console.log(drug_data);
     return drug_data;
 }
 
@@ -201,7 +247,7 @@ function driver_groupby_alcohol(driver) {
     let alcohol_data = _.groupBy(filtered, d => { return d.alcohol; });
     alcohol_data = change_to_count(alcohol_data);
     alcohol_data = build_data(alcohol_data, "alcohol");
-    console.log(alcohol_data);
+    // console.log(alcohol_data);
     return alcohol_data;
 }
 
@@ -210,7 +256,7 @@ function driver_filter_obstruction(obstruction) {
     let obstruction_data = _.groupBy(filtered, d => { return d.obscured_by; });
     obstruction_data = change_to_count(obstruction_data);
     obstruction_data = build_data(obstruction_data, "obstruction");
-    console.log(obstruction_data);
+    // console.log(obstruction_data);
     return obstruction_data;
 }
 
@@ -219,7 +265,7 @@ function driver_filter_violation(violation) {
     let violation_data = _.groupBy(filtered, d => { return d.violation_name; });
     violation_data = change_to_count(violation_data);
     violation_data = build_data(violation_data, "violation");
-    console.log(violation_data);
+    // console.log(violation_data);
     return violation_data;
 }
 
@@ -391,7 +437,7 @@ function fucking_hard_code3(data) {
             } else if (key.includes("Rain, Snow")) {
                 final_data["Rain/Snow/Fog"] = data[key];
             } else if (key.includes("In-Transport Motor")) {
-                final_data["Motor"] = data[key];
+                final_data["In-Transport Motor"] = data[key];
             } else if (key.includes("Reflected Glare")) {
                 final_data["Glare"] = data[key];
             } else {
