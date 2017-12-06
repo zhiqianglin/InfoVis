@@ -361,7 +361,7 @@ function veh_plotChart() {
       .enter()
       .append("g")
       .attr("class", "legend")
-      .attr("transform", function(d, i) { return "translate(" + (veh_width-veh_margin.right) + "," + (veh_margin.top + i * 20) + ")"; });
+      .attr("transform", function(d, i) { return "translate(" + (veh_width-veh_margin.right-10) + "," + (veh_margin.top + i * 20) + ")"; });
   legend.append("rect")
       .attr("width", 40)
       .attr("height",20)
@@ -372,10 +372,8 @@ function veh_plotChart() {
       .attr("dy", ".35em")
       .text(String);
   veh_vis.append("text")
-      .attr("class", "label")
-      .attr("x", veh_width-10)
+      .attr("x", veh_width-5)
       .attr("y", 10)
-      .attr("dy", ".35em")
       .text("Counts");
   if(veh_getSelectedYAxis() != "yaxis3") {
     veh_vis.selectAll("rect")

@@ -4,7 +4,7 @@
     display: flex;
     flex-direction: row;
     /* justify-content: space-around; */
-    justify-content: right;
+    justify-content: center;
     align-items: center;
 	/* Replace height to dynamic later mayber */
 	/*border:2px solid red;  */
@@ -29,7 +29,7 @@
 }
 
 .vehicleSexFilter {
-    margin-right: 20px;
+    margin-right: 10px;
 }
 
 .vehicleAgeFilter {
