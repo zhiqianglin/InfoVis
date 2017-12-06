@@ -6,7 +6,7 @@
 	color: #313339;
 }
 
-body {
+body footer {
 	font-family: 'Catamaran', sans-serif;
 	color: #1b3050;
 	-webkit-font-smoothing: antialiased;
@@ -30,7 +30,7 @@ h2 {
 }
 
 body {
-	padding-top: 70px
+	padding-top: 60px
 }
 
 .states.active {
@@ -116,4 +116,9 @@ body {
 .section_title_content {
 	font-size: 30px;
 	margin-top: 20px;
+}
+
+#site-footer {
+    height: 50px;
+    background: #EDEFF0;
 }
