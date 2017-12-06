@@ -3,7 +3,7 @@ let driver_filter = {
     vehicle_make: "All",
     state: "All"
 };
-let driver_width = document.getElementById('driver').clientWidth * 0.9;
+let driver_width = document.getElementById('driver').clientWidth * 0.85;
 let driver_height = 75;
 let driver_margin_total = 100;
 let driver_person_data;
@@ -13,14 +13,13 @@ let driver_top_make = new Set(["Ford", "Chevrolet", "Toyota", "Honda", "Dodge", 
 );
 
 let build_chart = {
-
     draw: function(config) {
         me = this,
         data = config.data,
         margin = config.margin,
         width = driver_width - margin.left - margin.right,
         height = driver_height - margin.top - margin.bottom,
-        xScale = d3.scaleLinear().rangeRound([0, driver_width - driver_margin_total]);
+        xScale = d3.scaleLinear().rangeRound([0, width]);
         yScale = d3.scaleBand().domain(data.values.map(d => { return d.type; }))
             .rangeRound([driver_height, 0])
             .padding(0.1)
@@ -63,7 +62,18 @@ let build_chart = {
             .attr("fill", d => {
                 let c = d[0].data[d.key];
                 return colorScale2(c);
-             })
+             });
+
+        let tip = d3.tip()
+             .attr("class", "d3-tip")
+             .offset([-10, 0])
+             .html(d => {
+                // console.log(d[0]["data"][d.key]);
+                let value = d[0]["data"][d.key];
+                return "<span style='color:rgb(72,242,137)'>" + d.key + ": " + value + "</span>";
+             });
+ 
+        serie.call(tip);
             
         serie.selectAll("rect")
             .data(d => { return d; })
@@ -78,36 +88,14 @@ let build_chart = {
                 if (diff <=0) {
                     return 0;
                 }
-                return diff; });
-            // .on("mouseover", function() { tooltip.style("display", null); })
-            // .on("mouseout", function() { tooltip.style("display", "none"); })
-            // .on("mousemove", mousemove);
+                return diff;
+            });
 
-        // function mousemove(d, i) {
-        //     // console.log(d3.mouse(this));
-        //     var xPosition = d3.mouse(this)[0] - 20;
-        //     var yPosition = d3.mouse(this)[1] - 20;
-        //     console.log(d);
-        //     tooltip.attr("transform", "translate(" + xPosition + "," + yPosition + ")");
-        //     tooltip.select("text").text("Wo Cao");
-        // }
+        serie.on("mouseover", tip.show)
+        .on("mouseout", tip.hide);
 
-        // let tooltip = chart.append("g")
-        //      .attr("class", "d3-tip")
-        //      .style("display", "none");
-                 
-        //      tooltip.append("rect")
-        //      .attr("width", 60)
-        //      .attr("height", 20)
-        //      .attr("fill", "black");
-         
-        //      tooltip.append("text")
-        //      .attr("x", 30)
-        //      .attr("dy", "1.2em")
-        //      .style("text-anchor", "middle")
-        //      .attr("font-size", "12px")
-        //      .attr("font-weight", "bold");
-        
+
+
         let legend = serie.append("g")
             .attr("class", "driver-legend")
             .attr("transform", d => { 
@@ -135,11 +123,13 @@ let build_chart = {
                         return d.key; 
                     }
                 });
+
+
     }
 }
 
 function driver_init(age, obstruction, violation, alcohol, drug) {
-    let margin = {top: 50, bottom: 100, left: 130, right: 50};
+    let margin = {top: 50, bottom: 100, left: 200, right: -30};
 
     for (let i = 0; i < arguments.length; i++) {
         if (arguments[i].values[0].total != 0) {
