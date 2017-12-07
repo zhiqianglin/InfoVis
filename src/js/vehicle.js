@@ -311,7 +311,7 @@ function veh_getPlotData() {
         veh_dataPlot.push({
           xVal: parseInt(veh_makeList[i].make),
           xValShow: veh_makeList[i].make_name_show,
-          yVal: 0,
+          yVal: null,
           count: 0
         });
       } else {
