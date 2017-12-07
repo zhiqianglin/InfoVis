@@ -9,6 +9,7 @@ let driver_margin_total = 100;
 let driver_person_data;
 let driver_vision_data;
 let driver_violation_data;
+let driver_color_scale = d3.scaleLinear().domain([0, 1]).range(["#d2e6f2", "#0570b0"]);
 let driver_top_make = new Set(["Ford", "Chevrolet", "Toyota", "Honda", "Dodge", "Datsun/Nissan", "Harley-Davidson", "GMC", "Jeep/Kaiser-Jeep/Willys Jeep", "Freightliner"]
 );
 
@@ -32,7 +33,7 @@ let build_chart = {
             }
         }
         // console.log(max);
-        colorScale2 = d3.scaleLinear().domain([0, max]).range(["#ffffff", "#0570b0"]);
+        colorScale2 = d3.scaleLinear().domain([0, 1]).range(["#ffffff", "#0570b0"]);
         xAxis = d3.axisBottom().scale(xScale).tickSize(0);
         yAxis = d3.axisLeft().scale(yScale).tickSize(0);
 
@@ -60,8 +61,8 @@ let build_chart = {
             .append("g")
             .attr("class", "serie")
             .attr("fill", d => {
-                let c = d[0].data[d.key];
-                return colorScale2(c);
+                let ratio = d[0]["data"][d.key] / d[0]["data"]["total"]
+                return driver_color_scale(ratio);
              });
 
         let tip = d3.tip()
@@ -138,6 +139,8 @@ function driver_init(age, obstruction, violation, alcohol, drug) {
             });
         }
     }
+
+    console.log(d3.schemeBlues[5]);
 }
 
 d3.queue()
