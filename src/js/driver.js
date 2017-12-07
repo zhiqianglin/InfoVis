@@ -111,7 +111,7 @@ let build_chart = {
             })
 
     
-        legend.append("text")
+        legend.append("text").attr('class', 'google_fonts')
             .text( d => { 
                 // console.log(d);
                 let size = 15;

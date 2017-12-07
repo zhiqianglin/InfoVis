@@ -370,10 +370,12 @@ function veh_plotChart() {
       .attr("x", 45)
       .attr("y", 5)
       .attr("dy", ".5em")
+      .attr('class', 'google_fonts')
       .text(String);
   veh_vis.append("text")
       .attr("x", veh_width-5)
       .attr("y", 10)
+      .attr('class', 'google_fonts')
       .text("Counts");
 	
   var xName;
@@ -474,17 +476,21 @@ function veh_plotChart() {
       .attr("class", "x axis")
       .attr("transform", "translate(0" + "," + veh_height + ")")
       .call(d3.axisBottom(myX))
-      .selectAll("text")  
+      .selectAll("text")
+      .attr('class', 'google_fonts')
       .style("text-anchor", "end")
       .attr("transform", "rotate(-20)");
 
   veh_vis.append("g")
       .attr("class", "y axis")
       .attr("transform", "translate(" + veh_margin.left + ", 0)")
-      .call(d3.axisLeft(myY));
+      .call(d3.axisLeft(myY))
+      .selectAll("text")
+      .attr('class', 'google_fonts');
 
   veh_vis.append("text")
       .attr("text-anchor", "end")
+      .attr('class', 'google_fonts')
       .attr("transform", "translate(" + veh_width + "," + (veh_height + veh_margin.top) + ")")
       .text(xName);
   /*
