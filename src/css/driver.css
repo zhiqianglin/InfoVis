@@ -11,7 +11,7 @@
 	margin: auto;
 }
 
-.d3-tip {
+.driver-d3-tip {
   line-height: 1;
   font-weight: bold;
   padding: 12px;
@@ -20,8 +20,12 @@
   border-radius: 2px;
 }
 
+.driver-tool-tip-text {
+  color: #ffffff;
+}
+
 /* Creates a small triangle extender for the tooltip */
-.d3-tip:after {
+.driver-d3-tip:after {
   box-sizing: border-box;
   display: inline;
   font-size: 10px;
@@ -34,7 +38,7 @@
 }
 
 /* Style northward tooltips differently */
-.d3-tip.n:after {
+.driver-d3-tip.n:after {
   margin: -1px 0 0 0;
   top: 100%;
   left: 0;

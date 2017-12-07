@@ -150,8 +150,14 @@
       </div>
       <div id="driver-filter">
         <div class="driver-filter">
-            <i class="fa fa-car fa-lg" aria-hidden="true" style="margin-right:5px"></i>
-            <select class="driver-select" id="driver-make" onchange='driver_update_filter(this.value)'>
+            <i class="fa fa-user fa-lg" aria-hidden="true" style="margin-right:5px;"></i>
+            <select class="driver-select" id="driver-sex" onchange='driver_update_filter(this.value, null, null)'>
+                <option value="All">All sex</option>
+                <option value="Female">Female</option>
+                <option value="Male">Male</option>
+            </select>
+            <i class="fa fa-car fa-lg" aria-hidden="true" style="margin-right:5px; margin-left: 20px"></i>
+            <select class="driver-select" id="driver-make" onchange='driver_update_filter(null, this.value, null)'>
               <option value="All">All make</option>
               <option value="Ford">Ford</option>
               <option value="Chevrolet">Chevrolet</option>

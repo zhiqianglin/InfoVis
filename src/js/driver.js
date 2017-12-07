@@ -65,12 +65,12 @@ let build_chart = {
              });
 
         let tip = d3.tip()
-             .attr("class", "d3-tip")
+             .attr("class", "driver-d3-tip")
              .offset([-10, 0])
              .html(d => {
                 // console.log(d);
                 let ratio = d[0]["data"][d.key] / d[0]["data"]["total"] * 100;
-                return "<span style='color:rgb(72,242,137)'>" + d.key + ": " + ratio.toFixed(1) + "%" + "</span>";
+                return "<span class='driver-tool-tip-text'>" + d.key + ": " + ratio.toFixed(1) + "%" + "</span>";
              });
  
         serie.call(tip);
@@ -182,13 +182,16 @@ function driver_load_data(error, driver, obstruction, violation) {
     driver_update_filter();
 }
 
-function driver_update_filter(make, state) {
+function driver_update_filter(sex, make, state) {
     d3.selectAll(".driver-svg").remove();
     if (make) {
         driver_filter.vehicle_make = make;
     }
     if (state) {
         driver_filter.state = state;
+    }
+    if (sex) {
+        driver_filter.sex = sex;
     }
     let age_data = driver_groupby_age(driver_person_data);
     let alcohol_data = driver_groupby_alcohol(driver_person_data);
@@ -267,7 +270,8 @@ function driver_filter_violation(violation) {
 function driver_filter_data(accident) {
     let filtered = driver_filter_state(accident);
     let filtered2 = driver_filter_make(filtered);
-    return filtered2;
+    let filtered3 = driver_filter_sex(filtered2);
+    return filtered3;
 }
 
 function driver_filter_state(accident) {
@@ -294,6 +298,18 @@ function driver_filter_make(accident) {
         });
     }
     return filter_by_make;
+}
+
+function driver_filter_sex(accident) {
+    let filter_by_sex;
+    if (driver_filter.sex === "All") {
+        return accident;
+    } else {
+        filter_by_sex = _.filter(accident, d => {
+            return d.sex === driver_filter.sex;
+        });       
+    }
+    return filter_by_sex;
 }
 
 function change_to_count(data) {
@@ -378,15 +394,16 @@ function get_top(data, top_number) {
 
 function fucking_hard_code1(data) {
     final_data = {};
+    let no_report = 0;
     for (var key in data) {
         if (data.hasOwnProperty(key)) {
             if (!data[key] && data[key] == 0) {
                 delete data[key];
             }
             if (key.includes("Unknown")) {
-                final_data["Unknown"] = data[key];
+                no_report += data[key];
             } else if (key.includes("Not Reported")) {
-                final_data["No Report"] = data[key];
+                no_report += data[key]
             } else if (key.includes("Yes")) {
                 final_data["Yes"] = data[key];
             } else {
@@ -394,6 +411,7 @@ function fucking_hard_code1(data) {
             }
         }
     }
+    final_data["Not Reported"] = no_report;
     return final_data;
 }
 
@@ -428,7 +446,7 @@ function fucking_hard_code3(data) {
                 delete data[key];
             }
             if (key.includes("Unknown")) {
-                final_data["Unknown"] = data[key];
+                final_data["Not Reported"] = data[key];
             } else if (key.includes("Rain, Snow")) {
                 final_data["Rain/Snow/Fog"] = data[key];
             } else if (key.includes("In-Transport Motor")) {
