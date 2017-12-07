@@ -3,6 +3,7 @@ let driver_filter = {
     vehicle_make: "All",
     state: "All"
 };
+
 let driver_width = document.getElementById('driver').clientWidth * 0.85;
 let driver_height = 75;
 let driver_margin_total = 100;
@@ -140,7 +141,53 @@ function driver_init(age, obstruction, violation, alcohol, drug) {
         }
     }
 
-    console.log(d3.schemeBlues[5]);
+    // console.log(d3.schemeBlues[5]);
+    build_color_legend();
+}
+
+function build_color_legend() {
+    let x = d3.scaleLinear()
+        .domain([1, 100])
+        .rangeRound([100, 600]);
+    
+    let range = d3.range(0, 101).filter(d => {
+        return d % 20 === 0;
+    });
+
+    let color = d3.scaleThreshold()
+            .domain(range)
+            .range(d3.schemeBlues[6]);
+
+    let legend_svg = d3.select("#driver")
+        .append("svg")
+        .attr("class", "driver-svg")
+        .attr("width", driver_width)
+        .attr("height", 150);
+
+    let legend = legend_svg.append("g")
+        .attr("id", "legend")
+        .attr("transform", "translate("+ driver_width * 0.2 + ", 60)");
+
+    legend.selectAll("rect")
+        .data(color.range().map(d => {
+            d = color.invertExtent(d);
+            console.log(d);
+            return d;
+        }).filter(d => {
+            return d[0] != null && d[1] != null;
+        }))
+        .enter().append("rect")
+        .attr("height", 20)
+        .attr("x", d => { return x(d[0]); })
+        .attr("width", d => { return x(d[1]) - x(d[0]); })
+        .attr("fill", d => { return color(d[0]); });
+
+    legend.call(d3.axisBottom(x)
+        .tickSize(25)
+        .tickFormat((x) => { return x + "%"; })
+        .tickValues(color.domain()))
+        .select(".domain")
+        .remove();
 }
 
 d3.queue()
