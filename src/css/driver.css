@@ -21,6 +21,7 @@
 }
 
 .driver-tool-tip-text {
+  font-family: 'Catamaran', sans-serif;
   color: #ffffff;
 }
 
@@ -58,6 +59,7 @@
 }
 
 .driver-axis-x text{
+  font-family: 'Catamaran', sans-serif;
   display: none;
 }
 
@@ -66,7 +68,7 @@
 }
 
 .driver-axis-y text {
-	font-family: Optima, Futura, sans-serif;
+	font-family: 'Catamaran', sans-serif;
 	font-weight: bold;
 	font-size: 18px;
 	fill: black;
@@ -75,5 +77,5 @@
 .driver-legend text {
     fill: black;
     font-size: 15px;
-    font-family: Optima, Futura, sans-serif;
+    font-family: 'Catamaran', sans-serif;
 }
